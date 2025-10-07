@@ -1,16 +1,25 @@
 # mecanum_car_ros2
 
-create .venv: python -m venv .venv
+## Setup
 
-source venv: source .venv/bin/activate
+### 1. Create a Python virtual environment
+python -m venv .venv
 
-install requirements.txt: pip install -r requirements.txt
+### 2. Activate the virtual environment
+source .venv/bin/activate
 
+### 3. Install Python dependencies
+pip install -r requirements.txt
 
-cd: cd ros2_ws
+## Build ROS 2 packages
 
-build packages: colcon build
+### 4. Build with colcon
+colcon build
 
-source: source install/setup.bash
+### 5. Source the install setup
+source install/setup.bash
 
-run package *: ros2 run *
+## Run nodes / executables
+
+### 6. Run nodes with ros2
+ros2 run <package_name> <executable_name>
