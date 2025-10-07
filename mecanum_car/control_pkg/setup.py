@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-package_name = 'py_pkg_test'
+package_name = 'control_pkg'
 
 setup(
     name=package_name,
@@ -13,17 +13,14 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='moerli',
-    maintainer_email='moritzgeissler04@gmail.com',
+    maintainer='moe',
+    maintainer_email='moe@todo.todo',
     description='TODO: Package description',
     license='TODO: License declaration',
-    extras_require={
-        'test': [
-            'pytest',
-        ],
-    },
+    tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+                        "control = control_pkg.control:main",
         ],
     },
 )
