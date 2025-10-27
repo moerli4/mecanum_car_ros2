@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
-# coding: utf-8
+
 import smbus
-import time,random
-import math
 import warnings
 
 PI5Car_I2CADDR = 0x2B
@@ -58,7 +56,7 @@ class Raspbot():
         """control the cars motors
 
         Args:
-            motor_id (int): id of the motor to control 0 1, 2, 3 for L1\L2\R1\R2 respectively
+            motor_id (int): id of the motor to control 0, 1, 2, 3 for L1, L2, R1, R2 respectively
             motor_dir (int): 0 for forwards, 1 for backwards
             motor_speed (int): speed value, [0, 255]
         """
@@ -167,7 +165,6 @@ class Raspbot():
         except Exception as e:
             warnings.warn(f"Ctrl_Headlights_ALL I2C error: {e}")
 
-
     def Ctrl_Headlights_ID(self, number, R, G, B):
         """control headlight LEDs color and intensity individually and precisely
 
@@ -215,8 +212,8 @@ class Raspbot():
         except Exception as e:
             warnings.warn(f"Ctrl_Headlights_ID I2C error: {e}")
 
-    def Ctrl_IR_Sensor(self, state):
-        """turn off or on infrared sensor
+    def Ctrl_IR_Remote_Sensor(self, state):
+        """turn off or on infrared sensor for remote control data
 
         Args:
             state (int): 0 for OFF, 1 for ON
@@ -235,7 +232,7 @@ class Raspbot():
             data = [state]
             self.write_array(reg, data)
         except Exception as e:
-            warnings.warn(f"Ctrl_IR_Sensor I2C error: {e}")
+            warnings.warn(f"Ctrl_IR_Remote_Sensor I2C error: {e}")
 
     def Ctrl_BEEP_Switch(self, state):
         """enable or disable the beep/buzzer
@@ -260,7 +257,7 @@ class Raspbot():
             warnings.warn(f"Ctrl_BEEP_Switch I2C error: {e}")
 
     def Ctrl_Ultrasound_Sensor(self, state):
-        """enable or disable the ultrasound sensor
+        """enable or disable the ultrasound distance sensor
 
         Args:
             state (int): 0 for OFF, 1 for ON
@@ -279,42 +276,67 @@ class Raspbot():
             data = [state]
             self.write_array(reg, data)
         except Exception as e:
-            warnings.warn(f"Ctrl_Ultrasound_Sensor I2C error: {e}")
+            warnings.warn(f"Ctrl_Ultrasonic_Switch I2C error: {e}")
         
-    ### No idea what these registers are for as we already have functions to control the headlights, maybe we can just remove the functions?? ###
-    # def Ctrl_Headlights_All_discrete(self, state, color):
-    #     """control all headlight LEDs color simultaneously, with discrete color value and max brightness
+    # functions for reading sensors
+    def Read_IR_Remote_Sensor(self):
+        """read infrared sensor data for remote control sensor
 
-    #     Args:
-    #         state (int): 1 for ON, 0 for OFF
-    #         color (int): 0 - Red, 1 - Green, 2 - Blue, 3 - Yellow, 4 - Purple, 5 - Indigo, 6 - White
-    #     """
-    #     try:
-    #         reg = 0x03
-    #         data = [state, color]
-    #         if state < 0:
-    #             state = 0
-    #         elif state > 1:
-    #             state = 1
-    #         self.write_array(reg, data)
-    #     except:
-    #         print ('Ctrl_Headlights_All_discrete I2C error')
+        Returns:
+            list: IR sensor data
+        """
+        try:
+            reg = 0x0c
+            return self.read_data_array(reg,1)
+        except Exception as e:
+            warnings.warn(f"Ctrl_IR_Remote_Sensor I2C error: {e}")
+            return []
 
-    # def Ctrl_Headlights_ID_discrete(self, number, state, color):
-    #     """control the headlight LEDs individually, with discrete color value and max brightness
+    def Read_Ultrasound_Sensor(self):
+        """read ultrasound data
+        
+        Returns:
+            list: ultrasound distance in mm
+        """
+        try:
+            diss_H = self.read_data_array(0x1b,1)[0]
+            diss_L = self.read_data_array(0x1a,1)[0]
+            dis = diss_H << 8 | diss_L 
+            return dis
 
-    #     Args:
-    #         number (int): ID of headlight LED, [1,14]
-    #         state (int): 1 for ON, 0 for OFF
-    #         color (int): 0 - Red, 1 - Green, 2 - Blue, 3 - Yellow, 4 - Purple, 5 - Indigo, 6 - White
-    #     """
-    #     try:
-    #         reg = 0x04
-    #         data = [number,state, color]
-    #         if state < 0:
-    #             state = 0
-    #         elif state > 1:
-    #             state = 1
-    #         self.write_array(reg, data)
-    #     except:
-    #         print ('Ctrl_Headlights_ID_discrete I2C error')
+        except Exception as e:
+            warnings.warn(f"Read_Ultrasound_Sensor I2C error: {e}")
+            return []
+
+    def Read_IR_Sensor(self):
+        """read infrared sensor data for line tracking sensor
+        
+        Returns:
+            list: IR sensor data
+        """
+        try:
+            reg = 0x0a
+            track = self.read_data_array(reg, 1)
+            x1 = (track >> 3) & 0x01
+            x2 = (track >> 2) & 0x01
+            x3 = (track >> 1) & 0x01
+            x4 = track & 0x01
+            return [x1,x2,x3,x4]
+
+        except Exception as e:
+            warnings.warn(f"Read_IR_Sensor I2C error: {e}")
+            return []
+
+    def Read_Key_Value(self):
+        """read key value
+        
+        Returns:
+            list: key pressed value
+        """
+        try:
+            reg = 0x0d
+            return self.read_data_array(reg, 1)
+
+        except Exception as e:
+            warnings.warn(f"Read_Key_Value I2C error: {e}")
+            return []
