@@ -306,7 +306,7 @@ class Raspbot():
 
         except Exception as e:
             warnings.warn(f"Read_Ultrasound_Sensor I2C error: {e}")
-            return []
+            return 0
 
     def Read_IR_Sensor(self):
         """read infrared sensor data for line tracking sensor
