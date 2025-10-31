@@ -43,11 +43,12 @@ def test_headlights(rb: Raspbot):
     # test Headlights_ID function
     for id_ in range(1,15):
         rb.Ctrl_Headlights_ID(id_,126,126,126)
-        time.sleep(0.2)
-    time.sleep(1)
+        time.sleep(0.5)
     for id_ in list(range(14,0,-1)):
         rb.Ctrl_Headlights_ID(id_,0,0,0)
-        time.sleep(0.2)
+        time.sleep(0.5)
+    rb.Ctrl_Headlights_ALL(0,0,0)
+
     
 @wait_before_and_after
 def test_beep_switch(rb: Raspbot):

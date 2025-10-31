@@ -316,7 +316,7 @@ class Raspbot():
         """
         try:
             reg = 0x0a
-            track = self.read_data_array(reg, 1)
+            track = self.read_data_array(reg, 1)[0]
             x1 = (track >> 3) & 0x01
             x2 = (track >> 2) & 0x01
             x3 = (track >> 1) & 0x01
