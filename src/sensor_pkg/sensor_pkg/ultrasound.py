@@ -6,7 +6,7 @@ from std_msgs.msg import UInt64
 
 class UltrasoundSensorNode(Node):
     def __init__(self):
-        super().__init__("ultrasound_sensor_node")
+        super().__init__("ultrasound_sensor")
         self.raspbot_ = Raspbot()
         self.raspbot_.Ctrl_Ultrasound_Sensor(1)
         self.publisher_ = self.create_publisher(UInt64,"ultrasound_distance",10)
@@ -21,8 +21,12 @@ class UltrasoundSensorNode(Node):
 def main(args=None):
     rclpy.init(args=args)
     node = UltrasoundSensorNode()
-    rclpy.spin(node)
-    rclpy.shutdown()
+    try:
+        rclpy.spin(node)
+    finally:
+        node.raspbot_.Ctrl_Ultrasound_Sensor(0)
+        node.destroy_node()
+        rclpy.shutdown()
 
 if __name__ == "__main__":
     main()
