@@ -5,9 +5,9 @@ from util.Raspbot_Library import Raspbot
 from std_msgs.msg import UInt8MultiArray
 
 
-class InfraredSensorNode(Node): # MODIFY NAME
+class InfraredSensorNode(Node):
     def __init__(self):
-        super().__init__("infrared_track_sensor") # MODIFY NAME
+        super().__init__("infrared_track_sensor")
         self.raspbot_ = Raspbot()
         self.publisher_ = self.create_publisher(UInt8MultiArray, "trackline_state", 10)
         self.timer_ = self.create_timer(0.5, self.timer_callback)
@@ -22,7 +22,7 @@ class InfraredSensorNode(Node): # MODIFY NAME
 
 def main(args=None):
     rclpy.init(args=args)
-    node = InfraredSensorNode() # MODIFY NAME
+    node = InfraredSensorNode()
     rclpy.spin(node)
     rclpy.shutdown()
 
