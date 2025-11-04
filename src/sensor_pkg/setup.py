@@ -20,7 +20,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-                "infrared = sensor_pkg.infrared:main",
+                "infrared_track = sensor_pkg.infrared_track:main",
                 "ultrasound = sensor_pkg.ultrasound:main",
         ],
     },
