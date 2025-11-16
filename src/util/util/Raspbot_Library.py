@@ -3,14 +3,20 @@ import smbus
 import warnings
 
 PI5Car_I2CADDR = 0x2B
-class Raspbot():
+
+class Raspbot:
     # init
     def get_i2c_device(self, address, i2c_bus):
         self._addr = address
-        if i2c_bus is None:
-            return smbus.SMBus(1)
-        else:
-            return smbus.SMBus(i2c_bus)
+        try:
+            if i2c_bus is None:
+                return smbus.SMBus(1)
+            else:
+                return smbus.SMBus(i2c_bus)
+        except PermissionError:
+            # default to mock i2c bus if not i2c device is found
+            warnings.warn("No I2C device found, using mock i2c bus instead")
+            return MockBus()
 
     def __init__(self):
         # Create I2C device.
@@ -38,7 +44,7 @@ class Raspbot():
 
     def read_data_byte(self):
         try:
-            buf = self._device.write_byte(self._addr)
+            buf = self._device.read_byte(self._addr)
             return buf
         except:
             print ('read_u8 I2C error')
@@ -131,8 +137,6 @@ class Raspbot():
             reg = 0x02
             data = [id, angle]
             self.write_array(reg, data)
-            
-        
             
             # return 0 for success
             return 0
@@ -404,3 +408,31 @@ class Raspbot():
         except Exception as e:
             warnings.warn(f"Read_Key_Value I2C error: {e}")
             return []
+        
+class MockBus:
+    """class to imitate the smbus api for when no i2c device is connected
+    """
+    def __init__(self):
+        print("MockBus initialized")
+
+    def write_i2c_block_data(self, _addr, reg, data):
+        print(f"MockBus write_i2c_block_data: {_addr, reg, data}")
+        return None
+
+    def write_byte(self, _addr, val):
+        print(f"MockBus write_byte: {_addr, val}")
+        return None
+
+    def read_i2c_block_data(self, _addr, reg, length):
+        print(f"MockBus read_i2c_block_data: {_addr, reg, length}")
+        return [0] * length
+
+    def read_byte(self, _addr):
+        print(f"MockBus read_byte: {_addr}")
+        return 0
+
+    def write_byte_data(self, _addr, reg, val):
+        print(f"MockBus write_byte_data: {_addr, reg, val}")
+        return None
+
+

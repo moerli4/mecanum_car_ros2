@@ -1,4 +1,7 @@
-setuptools==80.9.0
-PyYAML==6.0.3
-smbus==1.1.post2
-numpy==2.3.4
+setuptools
+PyYAML
+smbus
+numpy
+empy
+lark
+catkin_pkg
