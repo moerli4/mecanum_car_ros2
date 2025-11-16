@@ -13,10 +13,10 @@ setup(
     ],
     install_requires=['setuptools','smbus'],
     zip_safe=True,
-    maintainer='mo',
-    maintainer_email='mo@todo.todo',
-    description='TODO: Package description',
-    license='TODO: License declaration',
+    maintainer='Moritz Geissler',
+    maintainer_email='moritz.geissler@tum.de',
+    description='Package for cross package utilities',
+    license='All rights reserved',
     extras_require={
         'test': [
             'pytest',

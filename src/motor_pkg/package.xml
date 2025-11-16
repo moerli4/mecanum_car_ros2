@@ -4,8 +4,8 @@
   <name>motor_pkg</name>
   <version>0.0.0</version>
   <description>TODO: Package description</description>
-  <maintainer email="moe@todo.todo">moe</maintainer>
-  <license>TODO: License declaration</license>
+  <maintainer email="moritz.geissler@tum.de">Moritz Geissler</maintainer>
+  <license>All rights reserved</license>
 
   <depend>rclpy</depend>
 

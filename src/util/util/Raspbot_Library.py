@@ -58,6 +58,9 @@ class Raspbot():
             motor_id (int): id of the motor to control 0, 1, 2, 3 for L1, L2, R1, R2 respectively
             motor_dir (int): 0 for forwards, 1 for backwards
             motor_speed (int): speed value, [0, 255]
+            
+        Returns:
+            success (int): 0 for success else 1 
         """
         try:
             # assert types
@@ -83,8 +86,14 @@ class Raspbot():
             data = [motor_id, motor_dir, motor_speed]
             self.write_array(reg, data)
 
+            
+            # return 0 for success
+            return 0
+            
         except Exception as e:
+            # raise warning and return 1
             warnings.warn(f"Ctrl_Car I2C error: {e}")
+            return 1
 
     def Ctrl_Camera_Servo(self, id, angle):
         """control camera servo position
@@ -92,6 +101,9 @@ class Raspbot():
         Args:
             id (int): id of servo motor, {1,2}
             angle (int): angle at which to set the servo in degrees, [0,180]
+
+        Returns:
+            success (int): 0 for success else 1 
         """
         try:
             # assert types
@@ -119,9 +131,17 @@ class Raspbot():
             reg = 0x02
             data = [id, angle]
             self.write_array(reg, data)
+            
+        
+            
+            # return 0 for success
+            return 0
+            
         except Exception as e:
+            # raise warning and return 1
             warnings.warn(f"Ctrl_Camera_Servo I2C error: {e}")
-
+            return 1
+        
     def Ctrl_Headlights_ALL(self, R, G, B):
         """control all headlight LEDs color and intensity precisely and simultaneously
 
@@ -129,6 +149,9 @@ class Raspbot():
             R (int): intensity of red, [0,255]
             G (int): intensity of green, [0,255]
             B (int): intensity of blue, [0,255]
+
+        Returns:
+            success (int): 0 for success else 1 
         """
         try:
             # assert types
@@ -161,8 +184,14 @@ class Raspbot():
             reg = 0x08
             data = [R, G, B]
             self.write_array(reg, data)
+            
+            # return 0 for success
+            return 0
+            
         except Exception as e:
+            # raise warning and return 1
             warnings.warn(f"Ctrl_Headlights_ALL I2C error: {e}")
+            return 1
 
     def Ctrl_Headlights_ID(self, number, R, G, B):
         """control headlight LEDs color and intensity individually and precisely
@@ -172,6 +201,9 @@ class Raspbot():
             R (int): intensity of red, [0,255]
             G (int): intensity of green, [0,255]
             B (int): intensity of blue, [0,255]
+
+        Returns:
+            success (int): 0 for success else 1 
         """
         try:
             # assert types
@@ -208,14 +240,23 @@ class Raspbot():
             reg = 0x09
             data = [number, R, G, B]
             self.write_array(reg, data)
+            
+            # return 0 for success
+            return 0
+            
         except Exception as e:
+            # raise warning and return 1
             warnings.warn(f"Ctrl_Headlights_ID I2C error: {e}")
+            return 1
 
     def Ctrl_IR_Remote_Sensor(self, state):
         """turn off or on infrared sensor for remote control data
 
         Args:
             state (int): 0 for OFF, 1 for ON
+
+        Returns:
+            success (int): 0 for success else 1 
         """
         try:
             # assert type
@@ -230,14 +271,23 @@ class Raspbot():
             reg = 0x05
             data = [state]
             self.write_array(reg, data)
+            
+            # return 0 for success
+            return 0
+            
         except Exception as e:
+            # raise warning and return 1
             warnings.warn(f"Ctrl_IR_Remote_Sensor I2C error: {e}")
+            return 1
 
     def Ctrl_BEEP_Switch(self, state):
         """enable or disable the beep/buzzer
 
         Args:
             state (int): 0 for OFF, 1 for ON
+
+        Returns:
+            success (int): 0 for success else 1 
         """
         try:
             # assert type
@@ -252,14 +302,23 @@ class Raspbot():
             reg = 0x06
             data = [state]
             self.write_array(reg, data)
+            
+            # return 0 for success
+            return 0
+            
         except Exception as e:
+            # raise warning and return 1
             warnings.warn(f"Ctrl_BEEP_Switch I2C error: {e}")
+            return 1
 
     def Ctrl_Ultrasound_Sensor(self, state):
         """enable or disable the ultrasound distance sensor
 
         Args:
             state (int): 0 for OFF, 1 for ON
+
+        Returns:
+            success (int): 0 for success else 1 
         """
         try:
             # assert type
@@ -274,8 +333,14 @@ class Raspbot():
             reg = 0x07
             data = [state]
             self.write_array(reg, data)
+            
+            # return 0 for success
+            return 0
+            
         except Exception as e:
+            # raise warning and return 1
             warnings.warn(f"Ctrl_Ultrasonic_Switch I2C error: {e}")
+            return 1
         
     # functions for reading sensors
     def Read_IR_Remote_Sensor(self):
