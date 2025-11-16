@@ -8,10 +8,15 @@ class Raspbot:
     # init
     def get_i2c_device(self, address, i2c_bus):
         self._addr = address
-        if i2c_bus is None:
-            return smbus.SMBus(1)
-        else:
-            return smbus.SMBus(i2c_bus)
+        try:
+            if i2c_bus is None:
+                return smbus.SMBus(1)
+            else:
+                return smbus.SMBus(i2c_bus)
+        except PermissionError:
+            # default to mock i2c bus if not i2c device is found
+            warnings.warn("No I2C device found, using mock i2c bus instead")
+            return MockBus()
 
     def __init__(self):
         # Create I2C device.
@@ -39,7 +44,7 @@ class Raspbot:
 
     def read_data_byte(self):
         try:
-            buf = self._device.write_byte(self._addr)
+            buf = self._device.read_byte(self._addr)
             return buf
         except:
             print ('read_u8 I2C error')
@@ -406,76 +411,30 @@ class Raspbot:
             warnings.warn(f"Read_Key_Value I2C error: {e}")
             return []
         
-
-class RaspbotMock:
-    # init
+class MockBus:
+    """class to imitate the smbus api for when no i2c device is connected
+    """
     def __init__(self):
-        self._addr = PI5Car_I2CADDR
-        print("RaspbotMock: initialized (no I2C)")
+        print("MockBus initialized")
 
-    # core smbus functions: mimic low-level helpers used by real class but no I2C
-    def write_u8(self, reg, data):
-        print(f"RaspbotMock.write_u8(reg=0x{reg:02X}, data={data})")
+    def write_i2c_block_data(self, _addr, reg, data):
+        print(f"MockBus write_i2c_block_data: {_addr, reg, data}")
+        return None
 
-    def write_reg(self, reg):
-        print(f"RaspbotMock.write_reg(reg=0x{reg:02X})")
+    def write_byte(self, _addr, val):
+        print(f"MockBus write_byte: {_addr, val}")
+        return None
 
-    def write_array(self, reg, data):
-        print(f"RaspbotMock.write_array(reg=0x{reg:02X}, data={data})")
+    def read_i2c_block_data(self, _addr, reg, length):
+        print(f"MockBus read_i2c_block_data: {_addr, reg, length}")
+        return [0] * length
 
-    def read_data_byte(self):
-        print("RaspbotMock.read_data_byte() -> 0")
+    def read_byte(self, _addr):
+        print(f"MockBus read_byte: {_addr}")
         return 0
 
-    def read_data_array(self, reg, length):
-        print(f"RaspbotMock.read_data_array(reg=0x{reg:02X}, len={length})")
-        # return a list of zeros of requested length
-        return [0,] * length
+    def write_byte_data(self, _addr, reg, val):
+        print(f"MockBus write_byte_data: {_addr, reg, val}")
+        return None
 
-    # control functions: mirror the real API
-    def Ctrl_Car(self, motor_id, motor_dir, motor_speed):
-        print(f"RaspbotMock.Ctrl_Car(id={motor_id}, dir={motor_dir}, speed={motor_speed})")
-        return 0
 
-    def Ctrl_Camera_Servo(self, id, angle):
-        print(f"RaspbotMock.Ctrl_Camera_Servo(id={id}, angle={angle})")
-        return 0
-
-    def Ctrl_Headlights_ALL(self, R, G, B):
-        print(f"RaspbotMock.Ctrl_Headlights_ALL(R={R}, G={G}, B={B})")
-        return 0
-
-    def Ctrl_Headlights_ID(self, number, R, G, B):
-        print(f"RaspbotMock.Ctrl_Headlights_ID(number={number}, R={R}, G={G}, B={B})")
-        return 0
-
-    def Ctrl_IR_Remote_Sensor(self, state):
-        print(f"RaspbotMock.Ctrl_IR_Remote_Sensor(state={state})")
-        return 0
-
-    def Ctrl_BEEP_Switch(self, state):
-        print(f"RaspbotMock.Ctrl_BEEP_Switch(state={state})")
-        return 0
-
-    def Ctrl_Ultrasound_Sensor(self, state):
-        print(f"RaspbotMock.Ctrl_Ultrasound_Sensor(state={state})")
-        return 0
-
-    # functions for reading sensors: return defaults
-    def Read_IR_Remote_Sensor(self):
-        print("RaspbotMock.Read_IR_Remote_Sensor() -> [0]")
-        return [0]
-
-    def Read_Ultrasound_Sensor(self):
-        # return 20 mm as a default distance
-        print("RaspbotMock.Read_Ultrasound_Sensor() -> 20")
-        return 20
-
-    def Read_IR_Sensor(self):
-        # default: [0,1,1,0]
-        print("RaspbotMock.Read_IR_Sensor() -> [0,1,1,0]")
-        return [0, 1, 1, 0]
-
-    def Read_Key_Value(self):
-        print("RaspbotMock.Read_Key_Value() -> [0]")
-        return [0]
