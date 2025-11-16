@@ -1,4 +1,4 @@
-int8 id
-int8 set_angle
+uint8 id
+uint8 set_angle
 ---
-int8 success
+uint8 success

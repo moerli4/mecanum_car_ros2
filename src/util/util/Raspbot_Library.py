@@ -138,8 +138,6 @@ class Raspbot:
             data = [id, angle]
             self.write_array(reg, data)
             
-        
-            
             # return 0 for success
             return 0
             
