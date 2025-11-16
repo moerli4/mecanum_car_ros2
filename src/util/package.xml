@@ -3,8 +3,8 @@
 <package format="3">
   <name>util</name>
   <version>0.0.0</version>
-  <description>TODO: Package description</description>
-  <maintainer email="mo@todo.todo">mo</maintainer>
+  <description>Package for cross package utilities</description>
+  <maintainer email="moritz.geissler@tum.de">Moritz Geißler</maintainer>
   <license>All rights reserved</license>
 
   <depend>rclpy</depend>

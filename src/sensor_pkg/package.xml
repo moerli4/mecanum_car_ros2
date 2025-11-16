@@ -3,7 +3,7 @@
 <package format="3">
   <name>sensor_pkg</name>
   <version>0.0.0</version>
-  <description>TODO: Package description</description>
+  <description>Package for controlling and reading sensor data</description>
   <maintainer email="moritz.geissler@tum.de">Moritz Geissler</maintainer>
   <license>All rights reserved</license>
 
