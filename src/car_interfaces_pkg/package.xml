@@ -3,7 +3,7 @@
 <package format="3">
   <name>car_interfaces_pkg</name>
   <version>0.0.0</version>
-  <description>TODO: Package description</description>
+  <description>Package for custom interfaces</description>
   <maintainer email="zhenglinjin134@gmail.com">jin</maintainer>
   <license>Apache-2.0</license>
 

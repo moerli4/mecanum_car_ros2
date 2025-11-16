@@ -13,10 +13,10 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='moe',
-    maintainer_email='moe@todo.todo',
-    description='TODO: Package description',
-    license='TODO: License declaration',
+    maintainer='Moritz Geissler',
+    maintainer_email='moritz.geissler@tum.de',
+    description='Package for camera control',
+    license='All rights reserved',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [

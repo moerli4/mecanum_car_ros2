@@ -1,4 +1,4 @@
 int8 id
 int8 set_angle
 ---
-int8 get_angle
+int8 success
