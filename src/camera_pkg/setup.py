@@ -21,6 +21,7 @@ setup(
     entry_points={
         'console_scripts': [
             "camera = camera_pkg.camera:main",
+            "servo_control = camera_pkg.servo_ctrl:main",
         ],
     },
 )
