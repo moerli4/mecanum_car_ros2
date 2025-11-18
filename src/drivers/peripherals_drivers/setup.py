@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-package_name = 'camera_pkg'
+package_name = 'peripherals_drivers'
 
 setup(
     name=package_name,
@@ -15,13 +15,12 @@ setup(
     zip_safe=True,
     maintainer='Moritz Geissler',
     maintainer_email='moritz.geissler@tum.de',
-    description='Package for camera control',
+    description='Provides drivers for peripheral devices',
     license='All rights reserved',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            "camera = camera_pkg.camera:main",
-            "servo_control = camera_pkg.servo_ctrl:main",
+            "remote = peripherals_drivers.remote:main",
         ],
     },
 )

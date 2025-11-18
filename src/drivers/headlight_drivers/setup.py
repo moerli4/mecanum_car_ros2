@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-package_name = 'motor_pkg'
+package_name = 'headlight_drivers'
 
 setup(
     name=package_name,
@@ -15,12 +15,12 @@ setup(
     zip_safe=True,
     maintainer='Moritz Geissler',
     maintainer_email='moritz.geissler@tum.de',
-    description='Package for controlling the motor speeds',
+    description='Provides drivers for the headlight LED strip',
     license='All rights reserved',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            "motor_control = motor_pkg.motor_ctrl:main",
+                        "headlights = headlight_drivers.headlights:main",
         ],
     },
 )

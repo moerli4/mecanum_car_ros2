@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-package_name = 'sensor_pkg'
+package_name = 'motor_drivers'
 
 setup(
     name=package_name,
@@ -15,13 +15,12 @@ setup(
     zip_safe=True,
     maintainer='Moritz Geissler',
     maintainer_email='moritz.geissler@tum.de',
-    description='Package for controlling and reading sensor data',
+    description='Provides drivers for the motors',
     license='All rights reserved',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-                "infrared_track = sensor_pkg.infrared_track:main",
-                "ultrasound = sensor_pkg.ultrasound:main",
+            "motor_control = motor_drivers.motor_ctrl:main",
         ],
     },
 )

@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-package_name = 'peripherals_pkg'
+package_name = 'sensor_drivers'
 
 setup(
     name=package_name,
@@ -15,12 +15,13 @@ setup(
     zip_safe=True,
     maintainer='Moritz Geissler',
     maintainer_email='moritz.geissler@tum.de',
-    description='Package for controlling and reading data from peripheral devices',
+    description='Provides drivers for sensors',
     license='All rights reserved',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            "remote = peripherals_pkg.remote:main",
+                "infrared_track = sensor_drivers.infrared_track:main",
+                "ultrasound = sensor_drivers.ultrasound:main",
         ],
     },
 )

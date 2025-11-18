@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-package_name = 'headlight_pkg'
+package_name = 'camera_drivers'
 
 setup(
     name=package_name,
@@ -15,12 +15,13 @@ setup(
     zip_safe=True,
     maintainer='Moritz Geissler',
     maintainer_email='moritz.geissler@tum.de',
-    description='Package for controlling the headlight LED strip',
+    description='Provides drivers for the camera',
     license='All rights reserved',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-                        "headlights = headlight_pkg.headlights:main",
+            "camera = camera_drivers.camera:main",
+            "servo_control = camera_drivers.servo_ctrl:main",
         ],
     },
 )

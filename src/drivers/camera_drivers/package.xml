@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>motor_pkg</name>
+  <name>camera_drivers</name>
   <version>0.0.0</version>
-  <description>Package for controlling the motor speeds</description>
+  <description>Provides drivers for the camera</description>
   <maintainer email="moritz.geissler@tum.de">Moritz Geissler</maintainer>
   <license>All rights reserved</license>
 

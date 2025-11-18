@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>peripherals_pkg</name>
+  <name>headlight_drivers</name>
   <version>0.0.0</version>
-  <description>Package for controlling and reading data from peripheral devices</description>
+  <description>Provides drivers for the headlight LED strip</description>
   <maintainer email="moritz.geissler@tum.de">Moritz Geissler</maintainer>
   <license>All rights reserved</license>
 
