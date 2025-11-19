@@ -8,6 +8,7 @@ from util.Raspbot_Library import Raspbot
 
 class UltrasoundSensorDriverNode(Node):
     """Publisher Node to read and publish Ultrasound Sensor Value"""
+
     def __init__(self):
         super().__init__("ultrasound_sensor_driver")
         # initialize raspbot and turn on ultrasound sensor
@@ -31,7 +32,7 @@ def main(args=None):
     try:
         rclpy.spin(node)
     finally:
-        node.raspbot_.Ctrl_Ultrasound_Sensor(0) # turn off sensor
+        node.raspbot_.Ctrl_Ultrasound_Sensor(0)  # turn off sensor
         node.destroy_node()
         rclpy.shutdown()
 

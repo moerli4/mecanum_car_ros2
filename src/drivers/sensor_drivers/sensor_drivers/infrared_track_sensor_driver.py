@@ -8,6 +8,7 @@ from util.Raspbot_Library import Raspbot
 
 class InfraredSensorDriverNode(Node):
     """Publisher Node to read and publish IR Track Sensor Value"""
+
     def __init__(self):
         super().__init__("infrared_track_sensor_driver")
         # initialize raspbot

@@ -8,6 +8,7 @@ from util.Raspbot_Library import Raspbot
 
 class RemoteDriverNode(Node):
     """Publisher Node to receive and publish Infrared Remote Value"""
+
     def __init__(self):
         super().__init__("remote_driver")
         # initialize raspbot and turn IR sensor on
@@ -31,7 +32,7 @@ def main(args=None):
     try:
         rclpy.spin(node)
     finally:
-        node.raspbot_.Ctrl_IR_Remote_Sensor(0) # turn off sensor
+        node.raspbot_.Ctrl_IR_Remote_Sensor(0)  # turn off sensor
         node.destroy_node()
         rclpy.shutdown()
 

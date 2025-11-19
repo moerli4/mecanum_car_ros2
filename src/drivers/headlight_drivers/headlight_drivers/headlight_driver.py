@@ -8,6 +8,7 @@ from util.Raspbot_Library import Raspbot
 
 class HeadlightDriverNode(Node):
     """Service Node to change color and brightness of headlight strip LEDs"""
+
     def __init__(self):
         super().__init__("headlight_driver")
         # initialize raspbot
@@ -19,7 +20,7 @@ class HeadlightDriverNode(Node):
 
     def set_headlights_callback(self, request, response):
         # set headlight colors
-        if request.id == 0: # set all if id = 0
+        if request.id == 0:  # set all if id = 0
             response.success = self.raspbot_.Ctrl_Headlights_ALL(
                 request.r, request.g, request.b
             )
@@ -41,6 +42,7 @@ def main(args=None):
     finally:
         node.destroy_node()
         rclpy.shutdown()
+
 
 if __name__ == "__main__":
     main()
