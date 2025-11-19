@@ -1,4 +1,7 @@
-uint8 id
-uint8 speed
+// Custom srv interface for setting motor speed.
+
+uint8 id        // id of the motor to control 0, 1, 2, 3 for L1, L2, R1, R2 respectively.
+uint8 dir       // 0 for forwards, 1 for backwards.
+uint8 speed     // speed value (0-255).
 ---
-uint8 success
+bool success    // Indicates if the motor speed was set successfully.

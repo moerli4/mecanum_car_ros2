@@ -1,4 +1,6 @@
-uint8 id
-uint8 set_angle
+// Custom srv interface for setting camera servo angle.
+
+uint8 id            // Servo ID (1,2).
+uint8 set_angle     // Angle to which to set the servo (0-180 for ID=1, 0-100 for ID=2).
 ---
-uint8 success
+bool success        // Indicates if the servo angle was set successfully.
