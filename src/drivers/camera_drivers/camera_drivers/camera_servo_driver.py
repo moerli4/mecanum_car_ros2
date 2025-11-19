@@ -12,14 +12,16 @@ class ServoDriverServo(Node):
     def __init__(self):
         super().__init__("camera_servo_driver")
         self.raspbot_ = Raspbot()
-        self.srv = self.create_service(SetServo, "ctrl_servo", self.ctrl_servo_callback)
+        self.srv = self.create_service(
+            SetServo, "set_camera_servo", self.set_servo_callback
+        )
 
-    def ctrl_servo_callback(self, request, response):
+    def set_servo_callback(self, request, response):
         response.success = self.raspbot_.Ctrl_Camera_Servo(
             request.id, request.set_angle
         )
         self.get_logger().info(
-            f"[Servo Control] Incoming request {request.id, request.set_angle}"
+            f"[Set Camera Servo] Incoming request {request.id, request.set_angle}"
         )
         return response
 
