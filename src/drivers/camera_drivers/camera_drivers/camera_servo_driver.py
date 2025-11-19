@@ -11,24 +11,32 @@ class ServoDriverServo(Node):
 
     def __init__(self):
         super().__init__("camera_servo_driver")
+        # initialize raspbot object
         self.raspbot_ = Raspbot()
-        self.srv = self.create_service(SetServo, "ctrl_servo", self.ctrl_servo_callback)
+        # create service
+        self.srv = self.create_service(
+            SetServo, "set_camera_servo", self.set_servo_callback
+        )
 
-    def ctrl_servo_callback(self, request, response):
+    def set_servo_callback(self, request, response):
+        # set servo angles
         response.success = self.raspbot_.Ctrl_Camera_Servo(
             request.id, request.set_angle
         )
         self.get_logger().info(
-            f"[Servo Control] Incoming request {request.id, request.set_angle}"
+            f"[Set Camera Servo] Incoming request {request.id, request.set_angle}"
         )
         return response
 
 
 def main(args=None):
     rclpy.init(args=args)
-    servo_drivers = ServoDriverServo()
-    rclpy.spin(servo_drivers)
-    rclpy.shutdown()
+    node = ServoDriverServo()
+    try:
+        rclpy.spin(node)
+    finally:
+        node.destroy_node()
+        rclpy.shutdown()
 
 
 if __name__ == "__main__":
