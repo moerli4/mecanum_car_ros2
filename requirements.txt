@@ -8,3 +8,4 @@ catkin_pkg
 black
 isort
 opencv-python
+pytest

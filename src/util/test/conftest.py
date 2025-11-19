@@ -1,3 +1,4 @@
+import cv2
 import pytest
 import rclpy
 
@@ -33,3 +34,17 @@ def rb():
     except Exception:
         pass
     rclpy.shutdown()
+
+
+@pytest.fixture(scope="module")
+def camera():
+    # Initialize video capture
+    cap = cv2.VideoCapture("/dev/video0")
+
+    if not cap.isOpened():
+        raise Exception("Could not open video device.")
+
+    yield cap
+
+    # Release the camera when done
+    cap.release()
