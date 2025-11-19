@@ -7,6 +7,8 @@ from sensor_msgs.msg import CompressedImage
 
 
 class CameraDataDriverNode(Node):
+    """Publisher Node to publish the camera data as a compressed jpeg"""
+    
     def __init__(self):
         super().__init__("camera_data_driver")
 
