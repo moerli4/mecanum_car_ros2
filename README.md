@@ -23,3 +23,13 @@ source install/setup.bash
 
 ### 6. Run nodes with ros2
 ros2 run <package_name> <executable_name>
+
+## Testing
+
+colcon test
+colcon test-result --verbose
+
+## Code style
+
+black .
+isort . 

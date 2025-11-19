@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 import rclpy
 from rclpy.node import Node
-from util.Raspbot_Library import Raspbot
 from std_msgs.msg import UInt8MultiArray
+
+from util.Raspbot_Library import Raspbot
 
 
 class InfraredSensorNode(Node):
@@ -17,7 +18,7 @@ class InfraredSensorNode(Node):
         msg = UInt8MultiArray()
         msg.data = trackline_state
         self.publisher_.publish(msg)
-        self.get_logger().info(f'Publishing tracking line status: {msg.data}')
+        self.get_logger().info(f"Publishing tracking line status: {msg.data}")
 
 
 def main(args=None):

@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
-import smbus
 import warnings
 
+import smbus
+
 PI5Car_I2CADDR = 0x2B
+
 
 class Raspbot:
     # init
@@ -27,46 +29,46 @@ class Raspbot:
         try:
             self._device.write_byte_data(self._addr, reg, data)
         except Exception as e:
-            print ('write_u8 I2C error: ', e)
+            print("write_u8 I2C error: ", e)
 
     def write_reg(self, reg):
         try:
             self._device.write_byte(self._addr, reg)
         except Exception as e:
-            print ('write_u8 I2C error: ', e)
+            print("write_u8 I2C error: ", e)
 
     def write_array(self, reg, data):
         try:
             # self._device.write_block_data(self._addr, reg, data)
             self._device.write_i2c_block_data(self._addr, reg, data)
         except Exception as e:
-            print ('write_array I2C error: ', e)
+            print("write_array I2C error: ", e)
 
     def read_data_byte(self):
         try:
             buf = self._device.read_byte(self._addr)
             return buf
         except Exception as e:
-            print ('read_u8 I2C error: ', e)
+            print("read_u8 I2C error: ", e)
 
-    def read_data_array(self,reg,len):
+    def read_data_array(self, reg, len):
         try:
-            buf = self._device.read_i2c_block_data(self._addr,reg,len)
+            buf = self._device.read_i2c_block_data(self._addr, reg, len)
             return buf
         except Exception as e:
-            print ('read_u8 I2C error: ', e)
+            print("read_u8 I2C error: ", e)
 
     # control functions
-    def Ctrl_Car(self, motor_id, motor_dir,motor_speed):
+    def Ctrl_Car(self, motor_id, motor_dir, motor_speed):
         """control the cars motors
 
         Args:
             motor_id (int): id of the motor to control 0, 1, 2, 3 for L1, L2, R1, R2 respectively
             motor_dir (int): 0 for forwards, 1 for backwards
             motor_speed (int): speed value, [0, 255]
-            
+
         Returns:
-            success (int): 0 for success else 1 
+            success (int): 0 for success else 1
         """
         try:
             # assert types
@@ -74,17 +76,17 @@ class Raspbot:
                 raise TypeError("motor_id, motor_dir and motor_speed must be ints")
 
             # clamp to valid value ranges
-            if motor_speed < 0 :
+            if motor_speed < 0:
                 warnings.warn("motor_speed must be in [0,255], clamping to 0")
                 motor_speed = 0
-            elif motor_speed > 255:  
+            elif motor_speed > 255:
                 warnings.warn("motor_speed must be in [0,255], clamping to 255")
                 motor_speed = 255
 
             # check other values for validity
-            if not motor_id in (0,1,2,3):
+            if not motor_id in (0, 1, 2, 3):
                 raise ValueError("motor_id must be one of {0,1,2,3}")
-            if not motor_dir in (0,1):
+            if not motor_dir in (0, 1):
                 raise ValueError("motor_dir must be one of {0,1}")
 
             # write to reg
@@ -92,10 +94,9 @@ class Raspbot:
             data = [motor_id, motor_dir, motor_speed]
             self.write_array(reg, data)
 
-            
             # return 0 for success
             return 0
-            
+
         except Exception as e:
             # raise warning and return 1
             warnings.warn(f"Ctrl_Car I2C error: {e}")
@@ -109,7 +110,7 @@ class Raspbot:
             angle (int): angle at which to set the servo in degrees, [0,180]
 
         Returns:
-            success (int): 0 for success else 1 
+            success (int): 0 for success else 1
         """
         try:
             # assert types
@@ -137,15 +138,15 @@ class Raspbot:
             reg = 0x02
             data = [id, angle]
             self.write_array(reg, data)
-            
+
             # return 0 for success
             return 0
-            
+
         except Exception as e:
             # raise warning and return 1
             warnings.warn(f"Ctrl_Camera_Servo I2C error: {e}")
             return 1
-        
+
     def Ctrl_Headlights_ALL(self, R, G, B):
         """control all headlight LEDs color and intensity precisely and simultaneously
 
@@ -155,7 +156,7 @@ class Raspbot:
             B (int): intensity of blue, [0,255]
 
         Returns:
-            success (int): 0 for success else 1 
+            success (int): 0 for success else 1
         """
         try:
             # assert types
@@ -188,10 +189,10 @@ class Raspbot:
             reg = 0x08
             data = [R, G, B]
             self.write_array(reg, data)
-            
+
             # return 0 for success
             return 0
-            
+
         except Exception as e:
             # raise warning and return 1
             warnings.warn(f"Ctrl_Headlights_ALL I2C error: {e}")
@@ -207,7 +208,7 @@ class Raspbot:
             B (int): intensity of blue, [0,255]
 
         Returns:
-            success (int): 0 for success else 1 
+            success (int): 0 for success else 1
         """
         try:
             # assert types
@@ -244,10 +245,10 @@ class Raspbot:
             reg = 0x09
             data = [number, R, G, B]
             self.write_array(reg, data)
-            
+
             # return 0 for success
             return 0
-            
+
         except Exception as e:
             # raise warning and return 1
             warnings.warn(f"Ctrl_Headlights_ID I2C error: {e}")
@@ -260,25 +261,25 @@ class Raspbot:
             state (int): 0 for OFF, 1 for ON
 
         Returns:
-            success (int): 0 for success else 1 
+            success (int): 0 for success else 1
         """
         try:
             # assert type
             if not isinstance(state, int):
                 raise TypeError("state must be int")
-            
+
             # validate state
-            if state not in (0,1):
+            if state not in (0, 1):
                 raise ValueError("state must be in {0,1}")
 
             # write to reg
             reg = 0x05
             data = [state]
             self.write_array(reg, data)
-            
+
             # return 0 for success
             return 0
-            
+
         except Exception as e:
             # raise warning and return 1
             warnings.warn(f"Ctrl_IR_Remote_Sensor I2C error: {e}")
@@ -291,7 +292,7 @@ class Raspbot:
             state (int): 0 for OFF, 1 for ON
 
         Returns:
-            success (int): 0 for success else 1 
+            success (int): 0 for success else 1
         """
         try:
             # assert type
@@ -299,17 +300,17 @@ class Raspbot:
                 raise TypeError("state must be int")
 
             # validate state
-            if state not in (0,1):
+            if state not in (0, 1):
                 raise ValueError("state must be in {0,1}")
 
             # write to reg
             reg = 0x06
             data = [state]
             self.write_array(reg, data)
-            
+
             # return 0 for success
             return 0
-            
+
         except Exception as e:
             # raise warning and return 1
             warnings.warn(f"Ctrl_BEEP_Switch I2C error: {e}")
@@ -322,7 +323,7 @@ class Raspbot:
             state (int): 0 for OFF, 1 for ON
 
         Returns:
-            success (int): 0 for success else 1 
+            success (int): 0 for success else 1
         """
         try:
             # assert type
@@ -330,22 +331,22 @@ class Raspbot:
                 raise TypeError("state must be int")
 
             # validate state
-            if state not in (0,1):
+            if state not in (0, 1):
                 raise ValueError("state must be in {0,1}")
 
             # write to reg
             reg = 0x07
             data = [state]
             self.write_array(reg, data)
-            
+
             # return 0 for success
             return 0
-            
+
         except Exception as e:
             # raise warning and return 1
             warnings.warn(f"Ctrl_Ultrasonic_Switch I2C error: {e}")
             return 1
-        
+
     # functions for reading sensors
     def Read_IR_Remote_Sensor(self):
         """read infrared sensor data for remote control sensor
@@ -354,22 +355,22 @@ class Raspbot:
             list: IR sensor data
         """
         try:
-            reg = 0x0c
-            return self.read_data_array(reg,1)
+            reg = 0x0C
+            return self.read_data_array(reg, 1)
         except Exception as e:
             warnings.warn(f"Ctrl_IR_Remote_Sensor I2C error: {e}")
             return []
 
     def Read_Ultrasound_Sensor(self):
         """read ultrasound data
-        
+
         Returns:
             list: ultrasound distance in mm
         """
         try:
-            diss_H = self.read_data_array(0x1b,1)[0]
-            diss_L = self.read_data_array(0x1a,1)[0]
-            dis = diss_H << 8 | diss_L 
+            diss_H = self.read_data_array(0x1B, 1)[0]
+            diss_L = self.read_data_array(0x1A, 1)[0]
+            dis = diss_H << 8 | diss_L
             return dis
 
         except Exception as e:
@@ -378,18 +379,18 @@ class Raspbot:
 
     def Read_IR_Sensor(self):
         """read infrared sensor data for line tracking sensor
-        
+
         Returns:
             list: IR sensor data
         """
         try:
-            reg = 0x0a
+            reg = 0x0A
             track = self.read_data_array(reg, 1)[0]
             x1 = (track >> 3) & 0x01
             x2 = (track >> 2) & 0x01
             x3 = (track >> 1) & 0x01
             x4 = track & 0x01
-            return [x1,x2,x3,x4]
+            return [x1, x2, x3, x4]
 
         except Exception as e:
             warnings.warn(f"Read_IR_Sensor I2C error: {e}")
@@ -397,21 +398,22 @@ class Raspbot:
 
     def Read_Key_Value(self):
         """read key value
-        
+
         Returns:
             list: key pressed value
         """
         try:
-            reg = 0x0d
+            reg = 0x0D
             return self.read_data_array(reg, 1)
 
         except Exception as e:
             warnings.warn(f"Read_Key_Value I2C error: {e}")
             return []
-        
+
+
 class MockBus:
-    """class to imitate the smbus api for when no i2c device is connected
-    """
+    """class to imitate the smbus api for when no i2c device is connected"""
+
     def __init__(self):
         print("MockBus initialized")
 
@@ -434,5 +436,3 @@ class MockBus:
     def write_byte_data(self, _addr, reg, val):
         print(f"MockBus write_byte_data: {_addr, reg, val}")
         return None
-
-
