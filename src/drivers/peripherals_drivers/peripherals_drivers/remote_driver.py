@@ -10,7 +10,7 @@ class RemoteDriverNode(Node):
     def __init__(self):
         super().__init__("remote_driver")
         self.raspbot_ = Raspbot()
-        self.raspbot.Ctrl_IR_Remote_Sensor(1)
+        self.raspbot_.Ctrl_IR_Remote_Sensor(1)
         self.publisher_ = self.create_publisher(String, "infrared_remote_value", 10)
         self.timer_ = self.create_timer(0.5, self.timer_callback)
     
