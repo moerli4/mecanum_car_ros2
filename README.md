@@ -26,10 +26,12 @@ ros2 run <package_name> <executable_name>
 
 ## Testing
 
-colcon test
+colcon test --packages-select <package_name>
+
 colcon test-result --verbose
 
 ## Code style
 
 black .
+
 isort . 
