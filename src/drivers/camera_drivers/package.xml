@@ -1,17 +1,15 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>util</name>
+  <name>camera_drivers</name>
   <version>0.0.0</version>
-  <description>Package for cross package utilities</description>
-  <maintainer email="moritz.geissler@tum.de">Moritz Geißler</maintainer>
+  <description>Provides drivers for the camera</description>
+  <maintainer email="moritz.geissler@tum.de">Moritz Geissler</maintainer>
   <license>All rights reserved</license>
 
   <depend>rclpy</depend>
-  <exec_depend>python3-smbus</exec_depend>
 
-
-   <test_depend>python3-pytest</test_depend>
+  <test_depend>python3-pytest</test_depend>
 
   <export>
     <build_type>ament_python</build_type>

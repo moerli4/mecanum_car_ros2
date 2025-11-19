@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-package_name = "util"
+package_name = "headlight_drivers"
 
 setup(
     name=package_name,
@@ -10,18 +10,16 @@ setup(
         ("share/ament_index/resource_index/packages", ["resource/" + package_name]),
         ("share/" + package_name, ["package.xml"]),
     ],
-    install_requires=["setuptools", "smbus"],
+    install_requires=["setuptools"],
     zip_safe=True,
     maintainer="Moritz Geissler",
     maintainer_email="moritz.geissler@tum.de",
-    description="Package for cross package utilities",
+    description="Provides drivers for the headlight LED strip",
     license="All rights reserved",
-    extras_require={
-        "test": [
-            "pytest",
-        ],
-    },
+    tests_require=["pytest"],
     entry_points={
-        "console_scripts": [],
+        "console_scripts": [
+            "headlight_driver = headlight_drivers.headlight_driver:main",
+        ],
     },
 )
