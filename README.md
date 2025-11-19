@@ -26,9 +26,9 @@ ros2 run <package_name> <executable_name>
 
 ## Testing
 
-colcon test --packages-select <package_name>
+pytest <directory_path>
 
-colcon test-result --verbose
+to run hardware tests use 'pytest -m hardware'
 
 ## Code style
 

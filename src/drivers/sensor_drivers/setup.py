@@ -19,8 +19,8 @@ setup(
     tests_require=["pytest"],
     entry_points={
         "console_scripts": [
-            "infrared_track = sensor_drivers.infrared_track:main",
-            "ultrasound = sensor_drivers.ultrasound:main",
+            "infrared_track_sensor_driver = sensor_drivers.infrared_track_sensor_driver:main",
+            "ultrasound_sensor_driver = sensor_drivers.ultrasound_sensor_driver:main",
         ],
     },
 )

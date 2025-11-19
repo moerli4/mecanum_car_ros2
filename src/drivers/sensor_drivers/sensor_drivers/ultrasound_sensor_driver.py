@@ -6,9 +6,9 @@ from std_msgs.msg import UInt64
 from util.Raspbot_Library import Raspbot
 
 
-class UltrasoundSensorNode(Node):
+class UltrasoundSensorDriverNode(Node):
     def __init__(self):
-        super().__init__("ultrasound_sensor")
+        super().__init__("ultrasound_sensor_driver")
         self.raspbot_ = Raspbot()
         self.raspbot_.Ctrl_Ultrasound_Sensor(1)
         self.publisher_ = self.create_publisher(UInt64, "ultrasound_distance", 10)
@@ -23,7 +23,7 @@ class UltrasoundSensorNode(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    node = UltrasoundSensorNode()
+    node = UltrasoundSensorDriverNode()
     try:
         rclpy.spin(node)
     finally:

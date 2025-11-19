@@ -19,8 +19,8 @@ setup(
     tests_require=["pytest"],
     entry_points={
         "console_scripts": [
-            "camera = camera_drivers.camera:main",
-            "servo_control = camera_drivers.servo_ctrl:main",
+            "camera_data_driver = camera_drivers.camera_data_driver:main",
+            "camera_servo_driver = camera_drivers.camera_servo_driver:main",
         ],
     },
 )

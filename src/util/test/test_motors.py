@@ -1,8 +1,10 @@
 import time
+
 import pytest
 
 DEFAULT_DELAY = 1.0
 MOTOR_IDS = range(4)
+
 
 @pytest.mark.hardware
 def test_motors(rb):

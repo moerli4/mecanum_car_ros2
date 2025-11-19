@@ -1,8 +1,10 @@
 import time
+
 import pytest
 
 DEFAULT_DELAY = 1.0
 HEADLIGHT_IDS = range(1, 15)
+
 
 @pytest.mark.hardware
 def test_headlights(rb):

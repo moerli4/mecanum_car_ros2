@@ -19,7 +19,7 @@ setup(
     tests_require=["pytest"],
     entry_points={
         "console_scripts": [
-            "headlights = headlight_drivers.headlights:main",
+            "headlight_driver = headlight_drivers.headlight_driver:main",
         ],
     },
 )

@@ -19,7 +19,7 @@ setup(
     tests_require=["pytest"],
     entry_points={
         "console_scripts": [
-            "motor_control = motor_drivers.motor_ctrl:main",
+            "motor_driver = motor_drivers.motor_driver:main",
         ],
     },
 )

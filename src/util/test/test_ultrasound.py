@@ -1,8 +1,10 @@
 import time
+
 import pytest
 
 DEFAULT_DELAY = 1.0
 ITERATIONS = 30
+
 
 @pytest.mark.hardware
 def test_ultrasound_sensor(rb):

@@ -1,7 +1,9 @@
 import time
+
 import pytest
 
 DEFAULT_DELAY = 1.0
+
 
 @pytest.mark.hardware
 def test_beep_switch(rb):

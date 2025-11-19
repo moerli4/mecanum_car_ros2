@@ -3,15 +3,14 @@ import rclpy
 from rclpy.node import Node
 
 
-class CameraNode(Node):
+class RemoteDriverNode(Node):
     def __init__(self):
-        super().__init__("camera")
-        self.get_logger().info("Hello World")
+        super().__init__("remote_driver")
 
 
 def main(args=None):
     rclpy.init(args=args)
-    node = CameraNode()
+    node = RemoteDriverNode()
     rclpy.spin(node)
     rclpy.shutdown()
 

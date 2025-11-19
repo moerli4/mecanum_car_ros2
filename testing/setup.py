@@ -16,8 +16,7 @@ setup(
     maintainer_email="moritz.geissler@tum.de",
     description="Package for tests and experiments",
     license="All rights reserved",
-    extras_require={
-    },
+    extras_require={},
     entry_points={
         "console_scripts": [
             "test_raspbot_class = testing.test_raspbot_class:main",

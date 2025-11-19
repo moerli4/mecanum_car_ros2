@@ -19,7 +19,7 @@ setup(
     tests_require=["pytest"],
     entry_points={
         "console_scripts": [
-            "remote = peripherals_drivers.remote:main",
+            "remote_driver = peripherals_drivers.remote_driver:main",
         ],
     },
 )

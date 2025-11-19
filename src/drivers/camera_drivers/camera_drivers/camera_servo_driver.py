@@ -1,20 +1,18 @@
 #!/usr/bin/env python3
 import rclpy
-from car_interfaces_pkg.srv import ControlServo
 from rclpy.node import Node
 
+from interfaces.srv import SetServo
 from util.Raspbot_Library import Raspbot
 
 
-class ServoControlNode(Node):
+class ServoDriverServo(Node):
     """Service Node to control the angle of the camera servos"""
 
     def __init__(self):
-        super().__init__("servo_control")
+        super().__init__("camera_servo_driver")
         self.raspbot_ = Raspbot()
-        self.srv = self.create_service(
-            ControlServo, "ctrl_servo", self.ctrl_servo_callback
-        )
+        self.srv = self.create_service(SetServo, "ctrl_servo", self.ctrl_servo_callback)
 
     def ctrl_servo_callback(self, request, response):
         response.success = self.raspbot_.Ctrl_Camera_Servo(
@@ -28,8 +26,8 @@ class ServoControlNode(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    servo_control = ServoControlNode()
-    rclpy.spin(servo_control)
+    servo_drivers = ServoDriverServo()
+    rclpy.spin(servo_drivers)
     rclpy.shutdown()
 
 
