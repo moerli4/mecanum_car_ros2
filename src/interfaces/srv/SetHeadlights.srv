@@ -4,6 +4,5 @@ uint8 id        # Unique identifier for the color (0 for all simultaneously, 1-1
 uint8 r         # Red channel value (0-255).
 uint8 g         # Green channel value (0-255).
 uint8 b         # Blue channel value (0-255).
-
 ---
-bool success    # Indicates if the headlight color was set successfully.
+uint8 success    # Indicates if the headlight color was set successfully.

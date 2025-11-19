@@ -13,12 +13,13 @@ class RemoteDriverNode(Node):
         self.raspbot_.Ctrl_IR_Remote_Sensor(1)
         self.publisher_ = self.create_publisher(String, "infrared_remote_value", 10)
         self.timer_ = self.create_timer(0.5, self.timer_callback)
-    
+
     def timer_callback(self):
         value = self.raspbot_.Read_IR_Remote_Sensor()
         msg = String()
         msg.data = str(value)
         self.publisher_.publish(msg)
+
 
 def main(args=None):
     rclpy.init(args=args)
