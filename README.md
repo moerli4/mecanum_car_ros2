@@ -23,3 +23,15 @@ source install/setup.bash
 
 ### 6. Run nodes with ros2
 ros2 run <package_name> <executable_name>
+
+## Testing
+
+pytest <directory_path>
+
+to run hardware tests use 'pytest -m hardware'
+
+## Code style
+
+black .
+
+isort . 

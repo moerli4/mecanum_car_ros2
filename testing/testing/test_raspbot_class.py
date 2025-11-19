@@ -1,18 +1,22 @@
 #!/usr/bin/env python3
 import time
+
 import rclpy
+
 from util.Raspbot_Library import Raspbot
 
 # Constants
-MOTOR_IDS = range(4)          # motor channel IDs 0-3
+MOTOR_IDS = range(4)  # motor channel IDs 0-3
 HEADLIGHT_IDS = range(1, 15)  # headlight IDs 1-14
-ITERATIONS = 30               # number of sensor reads
-DEFAULT_DELAY = 1.0           # default decorator delay in seconds
+ITERATIONS = 30  # number of sensor reads
+DEFAULT_DELAY = 1.0  # default decorator delay in seconds
+
 
 def wait_before_and_after(delay=DEFAULT_DELAY):
     """
     Decorator that sleeps for `delay` seconds before calling the wrapped function and `delay` seconds after
     """
+
     def decorator(func):
         def wrapper(*args, **kwargs):
             time.sleep(delay)
@@ -20,8 +24,11 @@ def wait_before_and_after(delay=DEFAULT_DELAY):
                 return func(*args, **kwargs)
             finally:
                 time.sleep(delay)
+
         return wrapper
+
     return decorator
+
 
 @wait_before_and_after()
 def test_motors(rb):
@@ -36,6 +43,7 @@ def test_motors(rb):
     for i in MOTOR_IDS:
         rb.Ctrl_Car(i, 0, 0)
 
+
 @wait_before_and_after()
 def test_servos(rb):
     """
@@ -44,6 +52,7 @@ def test_servos(rb):
     rb.Ctrl_Camera_Servo(1, 30)
     time.sleep(1)
     rb.Ctrl_Camera_Servo(2, 30)
+
 
 @wait_before_and_after()
 def test_headlights(rb):
@@ -73,6 +82,7 @@ def test_headlights(rb):
     finally:
         rb.Ctrl_Headlights_ALL(0, 0, 0)  # turn all off
 
+
 @wait_before_and_after()
 def test_beep_switch(rb):
     """
@@ -81,6 +91,7 @@ def test_beep_switch(rb):
     rb.Ctrl_BEEP_Switch(1)
     time.sleep(0.5)
     rb.Ctrl_BEEP_Switch(0)
+
 
 @wait_before_and_after()
 def test_ir_track_sensor(rb):
@@ -91,6 +102,7 @@ def test_ir_track_sensor(rb):
         # Print to console; hardware method returns sensor values
         print("IR track value:", rb.Read_IR_Sensor())
         time.sleep(0.5)
+
 
 @wait_before_and_after()
 def test_ir_remote(rb):
@@ -105,6 +117,7 @@ def test_ir_remote(rb):
     finally:
         rb.Ctrl_IR_Remote_Sensor(0)
 
+
 @wait_before_and_after()
 def test_ultrasound_sensor(rb):
     """
@@ -118,6 +131,7 @@ def test_ultrasound_sensor(rb):
     finally:
         rb.Ctrl_Ultrasound_Sensor(0)
 
+
 @wait_before_and_after()
 def test_key(rb):
     """
@@ -126,6 +140,7 @@ def test_key(rb):
     for _ in range(ITERATIONS):
         print("Key:", rb.Read_Key_Value())
         time.sleep(0.5)
+
 
 def safe_cleanup(rb):
     """
@@ -160,6 +175,7 @@ def safe_cleanup(rb):
     except Exception:
         pass
 
+
 def main(args=None):
     """
     Main test sequence:
@@ -172,29 +188,29 @@ def main(args=None):
     print("Raspbot Object Created\n")
 
     try:
-        input("Press Enter To Test Motors")
-        test_motors(rb)
+        if input("Test Motors? (Y/N)") not in ["n", "N"]:
+            test_motors(rb)
 
-        input("Press Enter To Test Servos")
-        test_servos(rb)
+        if input("Test Servos? (Y/N)") not in ["n", "N"]:
+            test_servos(rb)
 
-        input("Press Enter to Test Headlights")
-        test_headlights(rb)
+        if input("Test Headlights? (Y/N)") not in ["n", "N"]:
+            test_headlights(rb)
 
-        input("Press Enter to Test Beep Switch")
-        test_beep_switch(rb)
+        if input("Test Beep Switch? (Y/N)") not in ["n", "N"]:
+            test_beep_switch(rb)
 
-        input("Press Enter to Test IR Track Sensor")
-        test_ir_track_sensor(rb)
+        if input("Test IR Track Sensor? (Y/N)") not in ["n", "N"]:
+            test_ir_track_sensor(rb)
 
-        input("Press Enter To IR Remote Sensor")
-        test_ir_remote(rb)
+        if input("Test IR Remote Sensor? (Y/N)") not in ["n", "N"]:
+            test_ir_remote(rb)
 
-        input("Press Enter to Test Ultrasound Sensor")
-        test_ultrasound_sensor(rb)
+        if input("Test Ultrasound Sensor? (Y/N)") not in ["n", "N"]:
+            test_ultrasound_sensor(rb)
 
-        input("Press Enter to Test Key")
-        test_key(rb)
+        if input("Test Key? (Y/N)") not in ["n", "N"]:
+            test_key(rb)
 
     except KeyboardInterrupt:
         print("Interrupted by user — performing safe cleanup.")
@@ -205,6 +221,6 @@ def main(args=None):
         safe_cleanup(rb)
         rclpy.shutdown()
 
+
 if __name__ == "__main__":
     main()
-    

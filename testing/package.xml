@@ -3,17 +3,12 @@
 <package format="3">
   <name>testing</name>
   <version>0.0.0</version>
-  <description>Package for testing scripts</description>
+  <description>Package for tests and experiments</description>
   <maintainer email="moritz.geissler@tum.de">Moritz Geißler</maintainer>
   <license>All rights reserved</license>
 
   <depend>rclpy</depend>
   <depend>util</depend>
-
-  <test_depend>ament_copyright</test_depend>
-  <test_depend>ament_flake8</test_depend>
-  <test_depend>ament_pep257</test_depend>
-  <test_depend>python3-pytest</test_depend>
 
   <export>
     <build_type>ament_python</build_type>
