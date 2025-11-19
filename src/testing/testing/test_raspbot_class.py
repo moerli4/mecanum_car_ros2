@@ -172,29 +172,29 @@ def main(args=None):
     print("Raspbot Object Created\n")
 
     try:
-        input("Press Enter To Test Motors")
-        test_motors(rb)
+        if input("Test Motors? (Y/N)") not in ["n","N"]:
+            test_motors(rb)
 
-        input("Press Enter To Test Servos")
-        test_servos(rb)
+        if input("Test Servos? (Y/N)") not in ["n","N"]:
+            test_servos(rb)
 
-        input("Press Enter to Test Headlights")
-        test_headlights(rb)
+        if input("Test Headlights? (Y/N)") not in ["n","N"]:
+            test_headlights(rb)
 
-        input("Press Enter to Test Beep Switch")
-        test_beep_switch(rb)
+        if input("Test Beep Switch? (Y/N)") not in ["n","N"]:
+            test_beep_switch(rb)
 
-        input("Press Enter to Test IR Track Sensor")
-        test_ir_track_sensor(rb)
+        if input("Test IR Track Sensor? (Y/N)") not in ["n","N"]:
+            test_ir_track_sensor(rb)
 
-        input("Press Enter To IR Remote Sensor")
-        test_ir_remote(rb)
+        if input("Test IR Remote Sensor? (Y/N)") not in ["n","N"]:
+            test_ir_remote(rb)
 
-        input("Press Enter to Test Ultrasound Sensor")
-        test_ultrasound_sensor(rb)
+        if input("Test Ultrasound Sensor? (Y/N)") not in ["n","N"]:
+            test_ultrasound_sensor(rb)
 
-        input("Press Enter to Test Key")
-        test_key(rb)
+        if input("Test Key? (Y/N)") not in ["n","N"]:
+            test_key(rb)
 
     except KeyboardInterrupt:
         print("Interrupted by user — performing safe cleanup.")

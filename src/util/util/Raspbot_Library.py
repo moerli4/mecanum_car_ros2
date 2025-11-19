@@ -26,35 +26,35 @@ class Raspbot:
     def write_u8(self, reg, data):
         try:
             self._device.write_byte_data(self._addr, reg, data)
-        except:
-            print ('write_u8 I2C error')
+        except Exception as e:
+            print ('write_u8 I2C error: ', e)
 
     def write_reg(self, reg):
         try:
             self._device.write_byte(self._addr, reg)
-        except:
-            print ('write_u8 I2C error')
+        except Exception as e:
+            print ('write_u8 I2C error: ', e)
 
     def write_array(self, reg, data):
         try:
             # self._device.write_block_data(self._addr, reg, data)
             self._device.write_i2c_block_data(self._addr, reg, data)
-        except:
-            print ('write_array I2C error')
+        except Exception as e:
+            print ('write_array I2C error: ', e)
 
     def read_data_byte(self):
         try:
             buf = self._device.read_byte(self._addr)
             return buf
-        except:
-            print ('read_u8 I2C error')
+        except Exception as e:
+            print ('read_u8 I2C error: ', e)
 
     def read_data_array(self,reg,len):
         try:
             buf = self._device.read_i2c_block_data(self._addr,reg,len)
             return buf
-        except:
-            print ('read_u8 I2C error')
+        except Exception as e:
+            print ('read_u8 I2C error: ', e)
 
     # control functions
     def Ctrl_Car(self, motor_id, motor_dir,motor_speed):
