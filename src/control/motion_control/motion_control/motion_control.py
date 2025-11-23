@@ -7,8 +7,7 @@ from interfaces.srv import SetMotor
 from std_msgs.msg import Float32MultiArray
 
 MAX_SPEED = 255
-SLEW_STEP = 10         # max change per call to avoid hardware damage
-COMMAND_TIMEOUT = 0.5  # seconds
+SLEW_STEP = 10         # TODO: max change per call to avoid hardware damage
 
 class MotionControlNode(Node):
     """Node for Motion Control"""
@@ -17,7 +16,7 @@ class MotionControlNode(Node):
         super().__init__("motion_control_node")
 
         # create client to drivers
-        self.motor_driver_client_ = self.create_client(SetMotor, "set_motor", 10)
+        self.motor_driver_client_ = self.create_client(SetMotor, "set_motor")
 
         # create publisher for current states
         self.state_pub_ = self.create_publisher(Float32MultiArray, 'motor_states', 10)
@@ -25,6 +24,7 @@ class MotionControlNode(Node):
 
         # class parameters
         self.current_speeds = [0, 0, 0, 0]
+
 
     def pub_states(self):
         """publish current motor states
@@ -46,9 +46,11 @@ class MotionControlNode(Node):
         # sanitize inputs
         speed = max(-MAX_SPEED, min(MAX_SPEED, int(speed)))
 
+        self.get_logger().info(f"trying to set speed to: {speed}")
+
         # call drivers
         req = SetMotor.Request()
-        req.index = index
+        req.id = index
         req.speed = abs(speed)
         req.dir = int(speed>=0)
         future = self.motor_driver_client_.call_async(req)
@@ -76,7 +78,14 @@ class MotionControlNode(Node):
         for i in range(4):
             self.set_motor(i, -speed)
 
+    def stop(self):
+        """stop all motion
+        """
+        for i in range(4):
+            self.set_motor(i, 0)
+
     def set_directional_speed(self,angle: int,speed: int):
+        # TODO
         """go in the direction of the angle passed
 
         Args:
@@ -85,13 +94,8 @@ class MotionControlNode(Node):
         """
         pass
 
-    def stop(self):
-        """stop all motion
-        """
-        for i in range(4):
-            self.set_motor(i, 0)
-
     def rotate(self,dir: int,speed: int):
+        # TODO
         """rotate the car in the specified direction at specified speed
 
         Args:
@@ -105,10 +109,10 @@ def main(args=None):
     node = MotionControlNode()
     
     node.set_forward_speed(10)
-    time.sleep(1)
+    time.sleep(2)
     
     node.set_backward_speed(10)
-    time.sleep(1)
+    time.sleep(2)
 
     node.stop()
     time.sleep(1)
