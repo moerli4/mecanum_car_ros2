@@ -5,6 +5,8 @@ from std_msgs.msg import String
 
 from util.Raspbot_Library import Raspbot
 
+SENSOR_HZ = 10
+
 
 class RemoteDriverNode(Node):
     """Publisher Node to receive and publish Infrared Remote Value"""
@@ -16,7 +18,7 @@ class RemoteDriverNode(Node):
         self.raspbot_.Ctrl_IR_Remote_Sensor(1)
         # create publisher
         self.publisher_ = self.create_publisher(String, "infrared_remote_value", 10)
-        self.timer_ = self.create_timer(0.5, self.timer_callback)
+        self.timer_ = self.create_timer(1 / SENSOR_HZ, self.timer_callback)
         self.get_logger().info(f"RemoteDriverNode initiated")
 
     def timer_callback(self):
