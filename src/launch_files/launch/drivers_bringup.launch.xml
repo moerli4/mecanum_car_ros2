@@ -1,0 +1,9 @@
+<launch>
+    <node pkg="camera_drivers" exec="camera_data_driver"/>
+    <node pkg="camera_drivers" exec="camera_servo_driver"/>
+    <node pkg="headlight_drivers" exec="headlight_driver"/>
+    <node pkg="motor_drivers" exec="motor_driver"/>
+    <node pkg="peripherals_drivers" exec="remote_driver"/>
+    <node pkg="sensor_drivers" exec="infrared_track_sensor_driver"/>
+    <node pkg="sensor_drivers" exec="ultrasound_sensor_driver"/>
+</launch>

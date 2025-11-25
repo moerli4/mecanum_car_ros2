@@ -17,6 +17,7 @@ class RemoteDriverNode(Node):
         # create publisher
         self.publisher_ = self.create_publisher(String, "infrared_remote_value", 10)
         self.timer_ = self.create_timer(0.5, self.timer_callback)
+        self.get_logger().info(f"RemoteDriverNode initiated")
 
     def timer_callback(self):
         # read and publish value
@@ -24,6 +25,7 @@ class RemoteDriverNode(Node):
         msg = String()
         msg.data = str(value)
         self.publisher_.publish(msg)
+        self.get_logger().info(f"Publishing infrared remote status: {msg.data}")
 
 
 def main(args=None):

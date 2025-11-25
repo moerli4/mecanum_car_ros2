@@ -16,6 +16,7 @@ class InfraredSensorDriverNode(Node):
         # create publisher
         self.publisher_ = self.create_publisher(UInt8MultiArray, "trackline_state", 10)
         self.timer_ = self.create_timer(0.5, self.timer_callback)
+        self.get_logger().info(f"InfraredSensorDriverNode initiated")
 
     def timer_callback(self):
         # read and publish sensor data

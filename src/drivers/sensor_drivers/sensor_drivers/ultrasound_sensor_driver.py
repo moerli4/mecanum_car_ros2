@@ -17,6 +17,7 @@ class UltrasoundSensorDriverNode(Node):
         # create publisher
         self.publisher_ = self.create_publisher(UInt64, "ultrasound_distance", 10)
         self.timer_ = self.create_timer(0.5, self.timer_callback)
+        self.get_logger().info(f"UltrasoundSensorDriverNode initiated")
 
     def timer_callback(self):
         # read and publish sensor data
@@ -24,6 +25,7 @@ class UltrasoundSensorDriverNode(Node):
         msg = UInt64()
         msg.data = int(ud)
         self.publisher_.publish(msg)
+        self.get_logger().info(f"Publishing ultrasound sensor status: {msg.data}")
 
 
 def main(args=None):

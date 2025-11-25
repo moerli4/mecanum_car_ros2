@@ -28,6 +28,8 @@ class CameraDataDriverNode(Node):
         # Timer to periodically capture and publish images
         self.timer = self.create_timer(0.1, self.capture_and_publish)
 
+        self.get_logger().info("CameraDataDriverNode initiated")
+
     def capture_and_publish(self):
         ret, frame = self.cap.read()
         if ret:
