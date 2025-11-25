@@ -15,6 +15,7 @@ class MotorDriverNode(Node):
         self.raspbot_ = Raspbot()
         # create service
         self.srv = self.create_service(SetMotor, "set_motor", self.set_motor_callback)
+        self.get_logger().info(f"MotorDriverNode initiated")
 
     def set_motor_callback(self, request, response):
         # set motor at given id to given direction and speed
