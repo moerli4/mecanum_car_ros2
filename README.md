@@ -1,37 +1,40 @@
 # mecanum_car_ros2
 
-## Setup
+## Installation 
 
-### 1. Create a Python virtual environment
-python -m venv .venv
+### Setup
 
-### 2. Activate the virtual environment
+Create the venv
+```
+python3 -m venv .venv
 source .venv/bin/activate
-
-### 3. Install Python dependencies
 pip install -r requirements.txt
+```
 
-## Build ROS 2 packages
-
-### 4. Build with colcon
+Build ROS 2 workspace
+```
 colcon build
-
-### 5. Source the install setup
 source install/setup.bash
+```
 
-## Run nodes / executables
+Start drivers with 
+```
+ros2 launch launch_files drivers_bringup.launch.xml
+```
 
-### 6. Run nodes with ros2
+and run individual packages with
+```
 ros2 run <package_name> <executable_name>
+```
 
-## Testing
-
-pytest <directory_path>
-
-to run hardware tests use 'pytest -m hardware'
-
-## Code style
-
+## Development & Contributing
+Please apply black and isort before committing
+```
 black .
-
 isort . 
+```
+Run tests with
+```
+pytest <directory_path>
+```
+to run hardware tests use the flag `-m hardware`.

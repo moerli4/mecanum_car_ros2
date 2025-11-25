@@ -17,6 +17,7 @@ class HeadlightDriverNode(Node):
         self.srv = self.create_service(
             SetHeadlights, "set_headlights", self.set_headlights_callback
         )
+        self.get_logger().info(f"HeadlightDriverNode initiated")
 
     def set_headlights_callback(self, request, response):
         # set headlight colors
@@ -29,7 +30,7 @@ class HeadlightDriverNode(Node):
                 request.id, request.r, request.g, request.b
             )
         self.get_logger().info(
-            f"[Set Headlights] Incoming request for Headlight number {request.id} with RGB=({request.r, request.g, request.b})"
+            f"Incoming request for Headlight number {request.id} with RGB=({request.r, request.g, request.b})"
         )
         return response
 

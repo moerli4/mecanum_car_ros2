@@ -3,7 +3,10 @@ import cv2
 import numpy as np
 import rclpy
 from rclpy.node import Node
+from rclpy.qos import HistoryPolicy, QoSProfile, ReliabilityPolicy
 from sensor_msgs.msg import CompressedImage
+
+SENSOR_HZ = 10
 
 
 class CameraDataDriverNode(Node):
@@ -12,9 +15,16 @@ class CameraDataDriverNode(Node):
     def __init__(self):
         super().__init__("camera_data_driver")
 
+        # Use reliable qos profile for camera image
+        qos_profile = QoSProfile(
+            reliability=ReliabilityPolicy.BEST_EFFORT,
+            history=HistoryPolicy.KEEP_LAST,
+            depth=1,
+        )
+
         # Publisher for compressed images
         self.publisher_ = self.create_publisher(
-            CompressedImage, "camera/compressed_image", 10
+            CompressedImage, "camera/compressed_image", qos_profile
         )
 
         # Initialize video capture
@@ -26,7 +36,9 @@ class CameraDataDriverNode(Node):
             return
 
         # Timer to periodically capture and publish images
-        self.timer = self.create_timer(0.1, self.capture_and_publish)
+        self.timer = self.create_timer(1 / SENSOR_HZ, self.capture_and_publish)
+
+        self.get_logger().info("CameraDataDriverNode initiated")
 
     def capture_and_publish(self):
         ret, frame = self.cap.read()
