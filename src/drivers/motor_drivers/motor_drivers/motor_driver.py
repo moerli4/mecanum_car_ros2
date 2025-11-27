@@ -2,7 +2,7 @@
 import rclpy
 from rclpy.node import Node
 
-from interfaces.srv import SetMotor,SetAllMotors
+from interfaces.srv import SetAllMotors, SetMotor
 from util.Raspbot_Library import Raspbot
 
 
@@ -15,7 +15,9 @@ class MotorDriverNode(Node):
         self.raspbot_ = Raspbot()
         # create service
         self.srv = self.create_service(SetMotor, "set_motor", self.set_motor_callback)
-        self.srv_all = self.create_service(SetAllMotors, "set_all_motors", self.set_all_motors_callback)
+        self.srv_all = self.create_service(
+            SetAllMotors, "set_all_motors", self.set_all_motors_callback
+        )
         self.get_logger().info(f"MotorDriverNode initiated")
 
     def set_motor_callback(self, request, response):
@@ -34,15 +36,17 @@ class MotorDriverNode(Node):
         )
         # set motors to given direction and speed
         response.success = 0
-        for i, (direction, speed) in enumerate(zip(request.dir,request.speed)):
-            success = self.raspbot_.Ctrl_Car(
-                i, direction, speed
-            )
+        for i, (direction, speed) in enumerate(zip(request.dir, request.speed)):
+            self.get_logger().info(type(i))
+            self.get_logger().info(type(direction))
+            self.get_logger().info(type(speed))
+            success = self.raspbot_.Ctrl_Car(i, direction, speed)
             if success != 0:
                 response.success = 1
-                break # break if one fails
+                break  # break if one fails
         return response
-    
+
+
 def main(args=None):
     rclpy.init(args=args)
     node = MotorDriverNode()
