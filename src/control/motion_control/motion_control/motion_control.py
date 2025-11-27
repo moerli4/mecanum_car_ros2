@@ -52,7 +52,7 @@ class MotionControlNode(Node):
             case "custom":
                 self.set_custom_speed(ast.literal_eval(params["speed_list"]))
             case "stop":
-                self.stop(ast.literal_eval(params["speed"]))
+                self.stop()
             case "angle":
                 pass
             case "rotate":
