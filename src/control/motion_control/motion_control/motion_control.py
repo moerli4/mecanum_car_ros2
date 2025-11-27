@@ -3,11 +3,9 @@ import rclpy
 from rclpy.node import Node
 import time
 
-from interfaces.srv import SetMotor
+from interfaces.srv import SetAllMotors
 from std_msgs.msg import Float32MultiArray
-
-MAX_SPEED = 255
-SLEW_STEP = 10         # TODO: max change per call to avoid hardware damage
+import numpy as np
 
 class MotionControlNode(Node):
     """Node for Motion Control"""
@@ -16,58 +14,72 @@ class MotionControlNode(Node):
         super().__init__("motion_control_node")
 
         # create client to drivers
-        self.motor_driver_client_ = self.create_client(SetMotor, "set_motor")
+        self.set_all_motors_client_ = self.create_client(SetAllMotors, "set_all_motors")
+
+        # speed values
+        self.current_speeds = np.array([0, 0, 0, 0])
+        self.target_speeds  = np.array([0, 0, 0, 0])
+
+        # update motor values at given frequency with given step increment
+        self.motor_update_Hz = 1
+        self.motor_update_step = 5
+        self.send_request_timer = self.create_timer(1/self.motor_update_Hz, self.update_motor_speeds)
 
         # create publisher for current states
         self.state_pub_ = self.create_publisher(Float32MultiArray, 'motor_states', 10)
-        self.timer = self.create_timer(0.5, self.pub_states)
 
-        # class parameters
-        self.current_speeds = [0, 0, 0, 0]
+        # info
+        self.get_logger().info(f"motion control node initialized")
 
+    def update_motor_speeds(self):
+        """incrementally reach the requested target speed
+        """
 
+        # do one incremental step towards the target speeds
+        if (self.current_speeds != self.target_speeds).any():
+            # get next increment
+            increment = np.sign(self.target_speeds - self.current_speeds) * self.motor_update_step
+            
+            # calculate next current speeds
+            next_current_speeds = self.current_speeds + increment
+            
+            # Clamp the overshoot for positive increments
+            positive_mask = (increment > 0) & (next_current_speeds > self.target_speeds)
+            next_current_speeds[positive_mask] = self.target_speeds[positive_mask]
+
+            # Clamp the overshoot for negative increments
+            negative_mask = (increment < 0) & (next_current_speeds < self.target_speeds)
+            next_current_speeds[negative_mask] = self.target_speeds[negative_mask]
+
+            # Apply new speeds to motors
+            self.current_speeds = next_current_speeds
+
+            # send request
+            req = SetAllMotors.Request()
+            req.speed = abs(self.current_speeds).tolist()
+            req.dir = (self.current_speeds>=0).astype(int).tolist()
+            future = self.all_motors_driver_client_.call_async(req)
+
+        # publish current states
+        self.pub_states()
+    
     def pub_states(self):
         """publish current motor states
         """
         # publish message
         msg = Float32MultiArray()
-        msg.data = self.current_speeds
+        msg.data = self.current_speeds.tolist()
         self.state_pub_.publish(msg)
         # info
         self.get_logger().info(f"current motor states: {self.current_speeds}")
 
-    def set_motor(self, index: int, speed: int):
-        """helper function to set motor speed and update class parameters
-
-        Args:
-            index (int): index of the motor to set
-            speed (int): turn speed, -255 - 255
-        """
-        # sanitize inputs
-        speed = max(-MAX_SPEED, min(MAX_SPEED, int(speed)))
-
-        self.get_logger().info(f"trying to set speed to: {speed}")
-
-        # call drivers
-        req = SetMotor.Request()
-        req.id = index
-        req.speed = abs(speed)
-        req.dir = int(speed>=0)
-        future = self.motor_driver_client_.call_async(req)
-
-        # update parameters
-        self.current_speeds[index] = speed
-        
-        return future
-    
     def set_forward_speed(self,speed: int):
         """go forward
 
         Args:
             speed (int): speed, 0-255
         """
-        for i in range(4):
-            self.set_motor(i, speed)
+        self.target_speeds = np.array([speed,]*4)
 
     def set_backward_speed(self,speed: int):
         """go backward
@@ -75,14 +87,12 @@ class MotionControlNode(Node):
         Args:
             speed (int): speed, 0-255
         """
-        for i in range(4):
-            self.set_motor(i, -speed)
+        self.target_speeds = np.array([-speed,]*4)
 
     def stop(self):
         """stop all motion
         """
-        for i in range(4):
-            self.set_motor(i, 0)
+        self.target_speeds = np.array([0,]*4)
 
     def set_directional_speed(self,angle: int,speed: int):
         # TODO
@@ -107,18 +117,17 @@ class MotionControlNode(Node):
 def main(args=None):
     rclpy.init(args=args)
     node = MotionControlNode()
-    
-    node.set_forward_speed(10)
-    time.sleep(2)
-    
-    node.set_backward_speed(10)
-    time.sleep(2)
 
-    node.stop()
-    time.sleep(1)
-
-    node.destroy_node()
-    rclpy.shutdown()
+    try:
+        rclpy.spin(node)
+    except Exception as e:
+        print(e)
+    finally:
+        node.stop()
+        while (node.current_speeds != np.array([0,0,0,0])).any():
+            time.sleep(0.1)
+        node.destroy_node()
+        rclpy.shutdown()
 
 if __name__ == "__main__":
     main()

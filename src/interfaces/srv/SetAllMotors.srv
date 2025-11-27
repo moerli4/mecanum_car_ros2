@@ -1,6 +1,6 @@
 # Custom srv interface for setting motor speed for all four motors simultaneously.
 
-uint8[] dir       # Uint8 array of length 4: 0 for forwards, 1 for backwards.
-uint8[] speed     # Uint8 array of length 4: speed value (0-255).
+uint8[4] dir       # Uint8 array of length 4: 0 for forwards, 1 for backwards.
+uint8[4] speed     # Uint8 array of length 4: speed value (0-255).
 ---
 uint8 success    # Indicates if the motor speeds were set successfully.
