@@ -26,8 +26,8 @@ class MotionControlNode(Node):
         self.target_speeds = np.array([0, 0, 0, 0])
 
         # update motor values at given frequency with given step increment
-        self.motor_update_Hz = 1
-        self.motor_update_step = 5
+        self.motor_update_Hz = 10
+        self.motor_update_step = 10
         self.send_request_timer = self.create_timer(
             1 / self.motor_update_Hz, self.update_motor_speeds
         )
@@ -107,8 +107,8 @@ class MotionControlNode(Node):
 
             # send request
             req = SetAllMotors.Request()
-            req.speed = abs(self.current_speeds).tolist()
-            req.dir = (self.current_speeds >= 0).astype(int).tolist()
+            req.speed = list(abs(self.current_speeds))
+            req.dir = list((self.current_speeds >= 0).astype(int))
             future = self.set_all_motors_client_.call_async(req)
 
         # publish current states

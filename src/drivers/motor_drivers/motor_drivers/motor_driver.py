@@ -37,9 +37,8 @@ class MotorDriverNode(Node):
         # set motors to given direction and speed
         response.success = 0
         for i, (direction, speed) in enumerate(zip(request.dir, request.speed)):
-            self.get_logger().info(type(i))
-            self.get_logger().info(type(direction))
-            self.get_logger().info(type(speed))
+            direction = int(direction)
+            speed = int(speed)
             success = self.raspbot_.Ctrl_Car(i, direction, speed)
             if success != 0:
                 response.success = 1
