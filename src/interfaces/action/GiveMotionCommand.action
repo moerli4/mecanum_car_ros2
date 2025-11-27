@@ -1,0 +1,12 @@
+# give a motion request to the motion control unit
+
+# Request
+string motion_type
+string[] param_names
+string[] param_values
+---
+# Result
+uint8 success
+---
+# Feedback
+int16[4] current_speeds

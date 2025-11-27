@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 import rclpy
 from rclpy.node import Node
+from rclpy.action import ActionServer
 import time
+import ast
 
 from interfaces.srv import SetAllMotors
+from interfaces.action import GiveMotionCommand
 from std_msgs.msg import Float32MultiArray
 import numpy as np
 
@@ -28,8 +31,50 @@ class MotionControlNode(Node):
         # create publisher for current states
         self.state_pub_ = self.create_publisher(Float32MultiArray, 'motor_states', 10)
 
+        # create action server for setting the motion type
+        self.motion_action_server_ = ActionServer(
+            self,
+            GiveMotionCommand,
+            "give_motion_command",
+            self.receive_motion_command)
+
         # info
         self.get_logger().info(f"motion control node initialized")
+
+    def receive_motion_command(self,goal_handle):
+        params = dict(zip(goal_handle.request.param_names,goal_handle.request.param_values))
+
+        match goal_handle.request.motion_type:
+            case "forward":
+                self.set_forward_speed(ast.literal_eval(params["speed"]))
+            case "forward":
+                self.set_backward_speed(ast.literal_eval(params["speed"]))
+            case "custom":
+                self.set_custom_speed(ast.literal_eval(params["speed_list"]))
+            case "stop":
+                self.stop(ast.literal_eval(params["speed"]))
+            case "angle":
+                pass
+            case "rotate":
+                pass
+        
+        # feedback
+        speed_feedback = GiveMotionCommand.Feedback()
+        max_iters = 1000
+        current_iter = 0
+        
+        # Start a timer to handle feedback
+        while rclpy.ok() and current_iter < max_iters:
+            if (self.current_speeds == self.target_speeds).all():
+                self.get_logger().info("Target speed reached")
+                goal_handle.succeed()
+                return GiveMotionCommand.Result(success=0)    # success
+            speed_feedback.current_speeds = self.current_speeds
+            goal_handle.publish_feedback(speed_feedback)
+            rclpy.spin_once(self, timeout_sec=0.05)     # allow callbacks to be processed
+            current_iter += 1
+
+        return GiveMotionCommand.Result(success=1)    # timeout or failure
 
     def update_motor_speeds(self):
         """incrementally reach the requested target speed
@@ -58,7 +103,7 @@ class MotionControlNode(Node):
             req = SetAllMotors.Request()
             req.speed = abs(self.current_speeds).tolist()
             req.dir = (self.current_speeds>=0).astype(int).tolist()
-            future = self.all_motors_driver_client_.call_async(req)
+            future = self.set_all_motors_client_.call_async(req)
 
         # publish current states
         self.pub_states()
@@ -88,6 +133,14 @@ class MotionControlNode(Node):
             speed (int): speed, 0-255
         """
         self.target_speeds = np.array([-speed,]*4)
+    
+    def set_custom_speed(self,speed: list):
+        """set custom speed values for each motor
+
+        Args:
+            speed (list): list of length four, speed for each motor as an int of range 0-255
+        """
+        self.target_speeds = np.array(speed)
 
     def stop(self):
         """stop all motion
