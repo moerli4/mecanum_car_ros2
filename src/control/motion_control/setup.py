@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-package_name = 'src/control/motion_control'
+package_name = 'motion_control'
 
 setup(
     name=package_name,
