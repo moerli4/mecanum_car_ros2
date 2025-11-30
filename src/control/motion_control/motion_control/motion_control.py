@@ -8,7 +8,7 @@ from rclpy.node import Node
 from interfaces.srv import SetAllMotors
 
 
-class MotionController():
+class MotionController:
     """Motion Controller"""
 
     def __init__(self, node=Node):
@@ -16,7 +16,9 @@ class MotionController():
         self.node = node
 
         # create client to drivers
-        self.set_all_motors_client_ = self.node.create_client(SetAllMotors, "set_all_motors")
+        self.set_all_motors_client_ = self.node.create_client(
+            SetAllMotors, "set_all_motors"
+        )
 
         # info
         self.node.get_logger().info(f"motion control node initialized")
@@ -25,19 +27,19 @@ class MotionController():
         """set custom speed values for each motor
 
         Args:
-            speed (list): list of length four, speed for each motor as an int of range 0-255
+            speed (list): list of length four, speed for each motor as an int of range -255 to 255
         """
         # get target speeds
         target_speed = np.array(speed)
-        
+
         # send request
         req = SetAllMotors.Request()
         req.speed = abs(target_speed)
         req.dir = (target_speed >= 0).astype(int)
         future = self.set_all_motors_client_.call_async(req)
-        
+
         return future
-    
+
     def forward(self, speed: int):
         """go forward
 
@@ -88,26 +90,48 @@ class MotionController():
         rad_angle = np.deg2rad(direction_angle)
 
         # Calculate the speed for each wheel based on the mecanum wheel configuration
-        normalization_factor = abs((np.sin(rad_angle) + np.cos(rad_angle))) if (np.sin(rad_angle) + np.cos(rad_angle)) != 0 else 1
-        front_left_speed = (np.sin(rad_angle) + np.cos(rad_angle)) / normalization_factor * speed * 255
-        rear_left_speed = (-np.cos(rad_angle) + np.sin(rad_angle)) / normalization_factor * speed * 255
-        front_right_speed = (-np.cos(rad_angle) + np.sin(rad_angle)) / normalization_factor * speed * 255
-        rear_right_speed = (np.sin(rad_angle) + np.cos(rad_angle)) / normalization_factor * speed * 255
+        normalization_factor = (
+            abs((np.sin(rad_angle) + np.cos(rad_angle)))
+            if (np.sin(rad_angle) + np.cos(rad_angle)) != 0
+            else 1
+        )
+        front_left_speed = (
+            (np.sin(rad_angle) + np.cos(rad_angle)) / normalization_factor * speed
+        )
+        rear_left_speed = (
+            (-np.cos(rad_angle) + np.sin(rad_angle)) / normalization_factor * speed
+        )
+        front_right_speed = (
+            (-np.cos(rad_angle) + np.sin(rad_angle)) / normalization_factor * speed
+        )
+        rear_right_speed = (
+            (np.sin(rad_angle) + np.cos(rad_angle)) / normalization_factor * speed
+        )
 
-        target_speed = [front_left_speed,rear_left_speed,front_right_speed,rear_right_speed]
+        target_speed = [
+            front_left_speed,
+            rear_left_speed,
+            front_right_speed,
+            rear_right_speed,
+        ]
 
         return self.set_speed(target_speed)
 
-    def rotate(self, direction: int, speed: int):
-        """rotate the car in the specified direction at specified speed
+    def rotate(self, rotation_direction: int, speed: int):
+        """rotate the car in the specified rotation_direction at specified speed
 
         Args:
-            direction (int): direction, [-1,1]
+            rotation_direction (int): rotation_direction, [-1,1]
             speed (int): speed at which to rotate, 0-255
         """
-        target_speed = np.array([
-            direction*speed,direction*speed,-direction*speed,-direction*speed
-        ])
+        target_speed = np.array(
+            [
+                rotation_direction * speed,
+                rotation_direction * speed,
+                -rotation_direction * speed,
+                -rotation_direction * speed,
+            ]
+        )
 
         return self.set_speed(target_speed)
 
@@ -117,7 +141,7 @@ def main(args=None):
     rclpy.init(args=args)
 
     # initialize demo and create motion controller
-    node = rclpy.create_node('motion_controller_demo')
+    node = rclpy.create_node("motion_controller_demo")
     motion_controller = MotionController(node)
 
     # short demo
@@ -133,13 +157,13 @@ def main(args=None):
         # backwards
         motion_controller.backward(30)
         time.sleep(1)
-        
+
         # stop
         motion_controller.stop()
         time.sleep(1)
 
         # rotate
-        motion_controller.rotate(1,30)
+        motion_controller.rotate(1, 30)
         time.sleep(1)
 
         # stop
@@ -147,12 +171,15 @@ def main(args=None):
         time.sleep(1)
 
         # go sideways
-        motion_controller.directional_motion(90,30)
+        motion_controller.directional_motion(90, 30)
         time.sleep(1)
 
         # stop
         motion_controller.stop()
         time.sleep(1)
+
+    except Exception as e:
+        print("An Error occurred in the motion control demo: ", e)
 
     finally:
         # shutdown safely
