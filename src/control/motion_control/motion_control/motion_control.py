@@ -16,10 +16,10 @@ class MotionController():
         self.node = node
 
         # create client to drivers
-        self.set_all_motors_client_ = self.create_client(SetAllMotors, "set_all_motors")
+        self.set_all_motors_client_ = self.node.create_client(SetAllMotors, "set_all_motors")
 
         # info
-        self.get_logger().info(f"motion control node initialized")
+        self.node.get_logger().info(f"motion control node initialized")
 
     def set_speed(self, speed: list):
         """set custom speed values for each motor
