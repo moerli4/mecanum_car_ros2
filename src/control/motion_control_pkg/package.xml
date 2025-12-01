@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>motion_control_pkg</name>
+  <version>0.0.0</version>
+  <description>Package for basic motion control</description>
+  <maintainer email="moritzgeissler04@gmail.com">mo</maintainer>
+  <license>All rights reserved</license>
+
+  <depend>rclpy</depend>
+
+  <test_depend>python3-pytest</test_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>
