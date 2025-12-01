@@ -2,7 +2,7 @@
 import rclpy
 from rclpy.node import Node
 
-from interfaces.srv import SetServo
+from driver_interfaces.srv import SetServo
 from util.Raspbot_Library import Raspbot
 
 
