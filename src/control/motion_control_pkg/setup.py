@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-package_name = "motion_control"
+package_name = "motion_control_pkg"
 
 setup(
     name=package_name,
@@ -23,7 +23,7 @@ setup(
     },
     entry_points={
         "console_scripts": [
-            "motion_control = motion_control.motion_control:main",
+            "motion_control = motion_control_pkg.motion_control:main",
         ],
     },
 )

@@ -80,16 +80,19 @@ class MotionController:
         return self.set_speed(target_speed)
 
     def directional_motion(self, direction_angle: int, speed: int):
-        """go in the direction of the angle passed
+        """go in the direction of the given direction angle at the given speed
 
         Args:
             direction_angle (int): direction angle in deg, 0-360
             speed (int): speed, 0-255
         """
-        # Convert angle to radians for trigonometric functions
+        # offset angle by 90 deg, cause 90 deg is front
+        direction_angle = direction_angle + 90
+
+        # convert angle to radians for trigonometric functions
         rad_angle = np.deg2rad(direction_angle)
 
-        # Calculate the speed for each wheel based on the mecanum wheel configuration
+        # calculate the speed for each wheel based on the mecanum wheel configuration
         normalization_factor = (
             abs((np.sin(rad_angle) + np.cos(rad_angle)))
             if (np.sin(rad_angle) + np.cos(rad_angle)) != 0
@@ -108,6 +111,7 @@ class MotionController:
             (np.sin(rad_angle) + np.cos(rad_angle)) / normalization_factor * speed
         )
 
+        # set target speeds
         target_speed = [
             front_left_speed,
             rear_left_speed,
@@ -143,40 +147,42 @@ def main(args=None):
     # initialize demo and create motion controller
     node = rclpy.create_node("motion_controller_demo")
     motion_controller = MotionController(node)
+    time.sleep(1)
 
     # short demo
     try:
-        # forwards
-        motion_controller.forward(30)
-        time.sleep(1)
+        if input("Run Motion Demo? [Y/N]:") not in ["n","N"]:
+            # forwards
+            motion_controller.forward(30)
+            time.sleep(1)
 
-        # stop
-        motion_controller.stop()
-        time.sleep(1)
+            # stop
+            motion_controller.stop()
+            time.sleep(1)
 
-        # backwards
-        motion_controller.backward(30)
-        time.sleep(1)
+            # backwards
+            motion_controller.backward(30)
+            time.sleep(1)
 
-        # stop
-        motion_controller.stop()
-        time.sleep(1)
+            # stop
+            motion_controller.stop()
+            time.sleep(1)
 
-        # rotate
-        motion_controller.rotate(1, 30)
-        time.sleep(1)
+            # rotate
+            motion_controller.rotate(1, 30)
+            time.sleep(1)
 
-        # stop
-        motion_controller.stop()
-        time.sleep(1)
+            # stop
+            motion_controller.stop()
+            time.sleep(1)
 
-        # go sideways
-        motion_controller.directional_motion(90, 30)
-        time.sleep(1)
+            # go sideways
+            motion_controller.directional_motion(90, 30)
+            time.sleep(1)
 
-        # stop
-        motion_controller.stop()
-        time.sleep(1)
+            # stop
+            motion_controller.stop()
+            time.sleep(1)
 
     except Exception as e:
         print("An Error occurred in the motion control demo: ", e)

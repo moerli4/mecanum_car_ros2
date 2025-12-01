@@ -1,4 +1,5 @@
 # Custom srv interface for setting motor speed for all four motors simultaneously.
+# indices: 0 is left front wheel, 1 is left rear wheel, 2 is right front wheel, 3 is right rear wheel
 
 uint8[4] dir       # Uint8 array of length 4: 0 for forwards, 1 for backwards.
 uint8[4] speed     # Uint8 array of length 4: speed value (0-255).
