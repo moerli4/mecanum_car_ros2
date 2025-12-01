@@ -2,7 +2,7 @@
 import rclpy
 from rclpy.node import Node
 
-from interfaces.srv import SetAllMotors, SetMotor
+from driver_interfaces.srv import SetAllMotors, SetMotor
 from util.Raspbot_Library import Raspbot
 
 
