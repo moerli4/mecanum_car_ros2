@@ -9,3 +9,4 @@ black
 isort
 opencv-python
 pytest
+mediapipe
