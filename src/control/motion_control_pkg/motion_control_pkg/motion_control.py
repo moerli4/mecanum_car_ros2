@@ -5,7 +5,7 @@ import numpy as np
 import rclpy
 from rclpy.node import Node
 
-from interfaces.srv import SetAllMotors
+from driver_interfaces.srv import SetAllMotors
 
 
 class MotionController:
