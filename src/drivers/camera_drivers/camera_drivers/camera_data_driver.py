@@ -32,7 +32,6 @@ class CameraDataDriverNode(Node):
 
         if not self.cap.isOpened():
             self.get_logger().error("Error: Could not open video device.")
-            rclpy.shutdown()
             return
 
         # Timer to periodically capture and publish images

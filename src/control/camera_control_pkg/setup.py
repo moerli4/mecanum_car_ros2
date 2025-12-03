@@ -24,9 +24,10 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            "face_detection = camera_control_pkg.face_detection:main",
-            "gesture_detection = camera_control_pkg.gesture_detection:main",
-            "pose_detection = camera_control_pkg.pose_detection:main",
+            # "face_detection = camera_control_pkg.face_detection:main",
+            # "gesture_detection = camera_control_pkg.gesture_detection:main",
+            # "pose_detection = camera_control_pkg.pose_detection:main",
+            "image_handler = camera_control_pkg.image_handler:main",
         ],
     },
 )
