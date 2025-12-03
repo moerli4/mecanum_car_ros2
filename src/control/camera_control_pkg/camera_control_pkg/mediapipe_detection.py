@@ -47,13 +47,6 @@ class MediapipeDetectionNode(Node):
             self.image_callback,
             qos_profile,
         )
-        # Subscribes to the compressed image from the driver
-        self.compressed_image_ = self.create_subscription(
-            CompressedImage,
-            "camera/compressed_image",
-            self.image_callback,
-            qos_profile,
-        )
 
         ## FACE DETECTION --------------------
         # Publisher for face detection
@@ -107,7 +100,6 @@ class MediapipeDetectionNode(Node):
         if frame is None:
             self.get_logger().error("Failed to decode image")
             return
-        self.get_logger().info(f"Image received")
 
         # do face detection
         self.face_detection(frame)
@@ -122,13 +114,13 @@ class MediapipeDetectionNode(Node):
         # do face detection with mediapipe
         mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=cv_image)
         results = self.face_detector.detect(mp_image)
+        w,h,_ = cv_image.shape
 
         # create bbox array msg
         bbox_array_msg = FaceBoundingBoxArray()
 
         # iterate over all detected faces
         if results.detections:
-            h, w, _ = cv_image.shape
             for det in results.detections:
                 # create bbox msg
                 bbox = det.bounding_box
@@ -139,10 +131,10 @@ class MediapipeDetectionNode(Node):
                 y2 = int(bbox.origin_y + bbox.height)
 
                 fbb = FaceBoundingBox()
-                fbb.x1 = x1
-                fbb.x2 = x2
-                fbb.y1 = y1
-                fbb.y2 = y2
+                fbb.x1 = x1/w
+                fbb.x2 = x2/w
+                fbb.y1 = y1/h
+                fbb.y2 = y2/h
 
                 # append bbox msg to bbox array msg
                 bbox_array_msg.faces.append(fbb)
@@ -154,7 +146,7 @@ class MediapipeDetectionNode(Node):
         # do pose detection with mediapipe
         mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=cv_image)
         results = self.pose_detector.detect(mp_image)
-
+        
         # create landmarks message
         pose_msg = PoseLandmarks()
 
@@ -180,8 +172,8 @@ class MediapipeDetectionNode(Node):
         array_msg = HandGestureArray()
 
         # iterate over detected gestures
-        if results.gestures:
-            for hand_idx, gestures in enumerate(results.gestures):
+        if results.gestures and results.hand_landmarks:
+            for hand_idx, (gestures,landmarks) in enumerate(zip(results.gestures,results.hand_landmarks)):
                 # left or right hand
                 handed = results.handedness[hand_idx][0].category_name
 
@@ -189,6 +181,9 @@ class MediapipeDetectionNode(Node):
                 for g in gestures:
                     hand_msg = HandGesture()
                     hand_msg.hand = handed
+                    hand_msg.x = [lm.x for lm in landmarks]
+                    hand_msg.y = [lm.y for lm in landmarks]
+                    hand_msg.z = [lm.z for lm in landmarks]
                     hand_msg.gesture = g.category_name
                     hand_msg.confidence = g.score
                     array_msg.gestures.append(hand_msg)

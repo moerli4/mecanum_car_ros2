@@ -11,6 +11,10 @@ from sensor_msgs.msg import CompressedImage
 from PIL import Image, ImageTk
 import tkinter as tk
 import threading
+import mediapipe as mp
+from mediapipe.tasks import python
+from mediapipe.tasks.python.vision import GestureRecognizer, GestureRecognizerOptions, RunningMode
+from mediapipe.framework.formats import landmark_pb2
 
 
 class ImageHandlerNode(Node):
@@ -129,18 +133,36 @@ class ImageHandlerNode(Node):
             display_image = self.frame.copy()
 
             # Apply selected overlays
-            for is_checked, overlay_name in zip(
-                self.overlay_checks, self.overlays.keys()
-            ):
-                if is_checked and self.overlays[overlay_name] is not None:
-                    match overlay_name:
-                        case "face_bboxes":
-                            pass
-                        case "pose_landmarks":
-                            pass
-                        case "gesture_infos":
-                            pass
+            for is_checked, overlay_name in zip(self.overlay_checks, self.overlays.keys()):
+                if is_checked.get():
+                    if self.overlays[overlay_name] is not None:
+                        match overlay_name:
+                            case "face_bboxes":
+                                for face in self.overlays["face_bboxes"]:
+                                    x1 = int(face.x1 * display_image.shape[0])
+                                    y1 = int(face.y1 * display_image.shape[1])
+                                    x2 = int(face.x2 * display_image.shape[0])
+                                    y2 = int(face.y2 * display_image.shape[1])
+                                    cv2.rectangle(display_image, (x1, y1), (x2, y2), (0, 255, 0), 2)  # Green rectangle
 
+                            case "pose_landmarks":
+                                landmarks_x = self.overlays["pose_landmarks"][0]
+                                landmarks_y = self.overlays["pose_landmarks"][1]
+                                for x, y in zip(landmarks_x, landmarks_y):
+                                    cx = int(x * display_image.shape[1])
+                                    cy = int(y * display_image.shape[0])
+                                    cv2.circle(display_image, (cx, cy), 5, (255, 0, 0), -1)  # Blue dots for landmarks
+
+                            case "gesture_infos":
+                                for gesture in self.overlays["gesture_infos"]:
+                                    hand = gesture.hand
+                                    gesture_name = gesture.gesture
+                                    confidence = gesture.confidence
+                                    x = int(gesture.x[0] * display_image.shape[1])  # Using first landmark for position
+                                    y = int(gesture.y[0] * display_image.shape[0])
+                                    text = f"{hand}: {gesture_name} ({confidence:.2f})"
+                                    cv2.putText(display_image, text, (x, y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1, cv2.LINE_AA)  # Red text
+                            
             # Convert to suitable format for Tkinter
             display_image = cv2.cvtColor(display_image, cv2.COLOR_BGR2RGB)
             imgtk = ImageTk.PhotoImage(image=Image.fromarray(display_image))

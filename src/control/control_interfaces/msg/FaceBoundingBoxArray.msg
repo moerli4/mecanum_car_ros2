@@ -1,3 +1,3 @@
-# interface for camera control: relative pixel coordinates of all detected faces
+# interface for camera control: absolute pixel coordinates of all detected faces
 
 FaceBoundingBox[] faces

@@ -1,6 +1,6 @@
-# interface for camera control: relative pixel coordinates of detected face
+# interface for camera control: absolute pixel coordinates of detected face
 
-int64 x1
-int64 y1
-int64 x2
-int64 y2
+float32 x1
+float32 y1
+float32 x2
+float32 y2
