@@ -2,47 +2,30 @@
 import cv2
 import mediapipe as mp
 import numpy as np
-from sensor_msgs.msg import CompressedImage
+import rclpy
+from control_interfaces.msg import (
+    FaceBoundingBox,
+    FaceBoundingBoxArray,
+    HandGesture,
+    HandGestureArray,
+    PoseLandmarks,
+)
+from cv_bridge import CvBridge
+from mediapipe.tasks import python
+from mediapipe.tasks.python import vision
+from mediapipe.tasks.python.vision import (
+    GestureRecognizer,
+    GestureRecognizerOptions,
+    RunningMode,
+)
+from rclpy.node import Node
 from rclpy.qos import HistoryPolicy, QoSProfile, ReliabilityPolicy
-import cv2
-import rclpy
-from control_interfaces.msg import FaceBoundingBox, FaceBoundingBoxArray
-from cv_bridge import CvBridge
-from mediapipe.tasks import python
-from mediapipe.tasks.python import vision
-from rclpy.node import Node
-from sensor_msgs.msg import Image
-import cv2
-import mediapipe as mp
-import numpy as np
-import rclpy
-from control_interfaces.msg import HandGesture, HandGestureArray
-from cv_bridge import CvBridge
-from mediapipe.framework.formats import landmark_pb2
-from mediapipe.tasks import python
-from mediapipe.tasks.python.vision import (GestureRecognizer,
-                                           GestureRecognizerOptions,
-                                           RunningMode)
-from rclpy.node import Node
-from sensor_msgs.msg import Image
-import cv2
-import mediapipe as mp
-import numpy as np
-import rclpy
-from control_interfaces.msg import PoseLandmarks
-from cv_bridge import CvBridge
-from mediapipe import solutions
-from mediapipe.framework.formats import landmark_pb2
-from mediapipe.tasks import python
-from mediapipe.tasks.python import vision
-from rclpy.node import Node
-from sensor_msgs.msg import Image
-
+from sensor_msgs.msg import CompressedImage
 
 
 class MediapipeDetectionNode(Node):
-    """Node to detect faces, gestures and poses and publish their coordinates and info
-    """
+    """Node to detect faces, gestures and poses and publish their coordinates and info"""
+
     def __init__(self):
         super().__init__("mediapie_detection_node")
 
@@ -56,7 +39,14 @@ class MediapipeDetectionNode(Node):
         # ros2 bridge
         self.bridge = CvBridge()
 
-        ## IMAGE SUBSCRIBER ------------------
+        ## IMAGE HANDLING --------------------
+        # Subscribes to the compressed image from the driver
+        self.compressed_image_ = self.create_subscription(
+            CompressedImage,
+            "camera/compressed_image",
+            self.image_callback,
+            qos_profile,
+        )
         # Subscribes to the compressed image from the driver
         self.compressed_image_ = self.create_subscription(
             CompressedImage,
@@ -68,7 +58,7 @@ class MediapipeDetectionNode(Node):
         ## FACE DETECTION --------------------
         # Publisher for face detection
         self.face_det_publisher_ = self.create_publisher(
-            FaceBoundingBoxArray, "/mediapipe/face_detection_bbox", qos_profile
+            FaceBoundingBoxArray, "/mediapipe/face_detection_bboxes", qos_profile
         )
         # MediaPipe face detection
         base_options = python.BaseOptions(
@@ -110,25 +100,25 @@ class MediapipeDetectionNode(Node):
     def image_callback(self, msg: CompressedImage):
         # msg.data is bytes of the JPEG image
         np_arr = np.frombuffer(msg.data, dtype=np.uint8)
-        frame = cv2.imdecode(np_arr, cv2.IMREAD_COLOR) # decode
-        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB) # transform to rgb
+        frame = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)  # decode
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)  # transform to rgb
 
         # log
         if frame is None:
-            self.get_logger().error('Failed to decode image')
+            self.get_logger().error("Failed to decode image")
             return
-        self.get_logger().info(f'Image received')
+        self.get_logger().info(f"Image received")
 
         # do face detection
         self.face_detection(frame)
 
         # do pose detection
         self.pose_detection(frame)
-        
+
         # do gesture detection
         self.gesture_detection(frame)
 
-    def face_detection(self,cv_image):
+    def face_detection(self, cv_image):
         # do face detection with mediapipe
         mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=cv_image)
         results = self.face_detector.detect(mp_image)
@@ -160,7 +150,7 @@ class MediapipeDetectionNode(Node):
         # publish
         self.face_det_publisher_.publish(bbox_array_msg)
 
-    def pose_detection(self,cv_image):
+    def pose_detection(self, cv_image):
         # do pose detection with mediapipe
         mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=cv_image)
         results = self.pose_detector.detect(mp_image)
@@ -177,11 +167,11 @@ class MediapipeDetectionNode(Node):
                 pose_msg.x.append(lm.x)
                 pose_msg.y.append(lm.y)
                 pose_msg.z.append(lm.z)
-        
+
         # publish
         self.pose_det_publisher_.publish(pose_msg)
-    
-    def gesture_detection(self,cv_image):
+
+    def gesture_detection(self, cv_image):
         # do gesture detection with mediapipe
         mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=cv_image)
         results = self.gesture_detector.recognize(mp_image)
@@ -217,6 +207,7 @@ def main(args=None):
     finally:
         node.destroy_node()
         rclpy.shutdown()
+
 
 if __name__ == "__main__":
     main()

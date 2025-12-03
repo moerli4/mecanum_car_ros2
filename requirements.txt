@@ -2,7 +2,7 @@
 setuptools
 wheel
 PyYAML
-numpy
+numpy<2.0.0
 empy
 lark
 catkin_pkg

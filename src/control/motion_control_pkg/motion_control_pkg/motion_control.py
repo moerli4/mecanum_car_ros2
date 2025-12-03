@@ -3,9 +3,8 @@ import time
 
 import numpy as np
 import rclpy
-from rclpy.node import Node
-
 from driver_interfaces.srv import SetAllMotors
+from rclpy.node import Node
 
 
 class MotionController:
@@ -151,7 +150,7 @@ def main(args=None):
 
     # short demo
     try:
-        if input("Run Motion Demo? [Y/N]:") not in ["n","N"]:
+        if input("Run Motion Demo? [Y/N]:") not in ["n", "N"]:
             # forwards
             motion_controller.forward(30)
             time.sleep(1)

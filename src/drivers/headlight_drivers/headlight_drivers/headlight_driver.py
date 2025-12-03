@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 import rclpy
+from driver_interfaces.srv import SetHeadlights
 from rclpy.node import Node
 
-from driver_interfaces.srv import SetHeadlights
 from util.Raspbot_Library import Raspbot
 
 
