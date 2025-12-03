@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import cv2
-import numpy as np
 import rclpy
 from rclpy.node import Node
 from rclpy.qos import HistoryPolicy, QoSProfile, ReliabilityPolicy
