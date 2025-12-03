@@ -25,6 +25,7 @@ setup(
         "console_scripts": [
             "mediapipe_detection = camera_control_pkg.mediapipe_detection:main",
             "image_handler = camera_control_pkg.image_handler:main",
+            "face_centering = camera_control_pkg.face_centering:main",
         ],
     },
 )
