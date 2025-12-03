@@ -114,7 +114,7 @@ class MediapipeDetectionNode(Node):
         # do face detection with mediapipe
         mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=cv_image)
         results = self.face_detector.detect(mp_image)
-        w,h,_ = cv_image.shape
+        w, h, _ = cv_image.shape
 
         # create bbox array msg
         bbox_array_msg = FaceBoundingBoxArray()
@@ -131,10 +131,10 @@ class MediapipeDetectionNode(Node):
                 y2 = int(bbox.origin_y + bbox.height)
 
                 fbb = FaceBoundingBox()
-                fbb.x1 = x1/w
-                fbb.x2 = x2/w
-                fbb.y1 = y1/h
-                fbb.y2 = y2/h
+                fbb.x1 = x1 / w
+                fbb.x2 = x2 / w
+                fbb.y1 = y1 / h
+                fbb.y2 = y2 / h
 
                 # append bbox msg to bbox array msg
                 bbox_array_msg.faces.append(fbb)
@@ -146,7 +146,7 @@ class MediapipeDetectionNode(Node):
         # do pose detection with mediapipe
         mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=cv_image)
         results = self.pose_detector.detect(mp_image)
-        
+
         # create landmarks message
         pose_msg = PoseLandmarks()
 
@@ -173,7 +173,9 @@ class MediapipeDetectionNode(Node):
 
         # iterate over detected gestures
         if results.gestures and results.hand_landmarks:
-            for hand_idx, (gestures,landmarks) in enumerate(zip(results.gestures,results.hand_landmarks)):
+            for hand_idx, (gestures, landmarks) in enumerate(
+                zip(results.gestures, results.hand_landmarks)
+            ):
                 # left or right hand
                 handed = results.handedness[hand_idx][0].category_name
 

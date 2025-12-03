@@ -1,20 +1,16 @@
 #!/usr/bin/env python3
+import threading
+import tkinter as tk
+
 import cv2
-import mediapipe as mp
 import numpy as np
 import rclpy
 from control_interfaces.msg import FaceBoundingBoxArray, HandGestureArray, PoseLandmarks
 from cv_bridge import CvBridge
+from PIL import Image, ImageTk
 from rclpy.node import Node
 from rclpy.qos import HistoryPolicy, QoSProfile, ReliabilityPolicy
 from sensor_msgs.msg import CompressedImage
-from PIL import Image, ImageTk
-import tkinter as tk
-import threading
-import mediapipe as mp
-from mediapipe.tasks import python
-from mediapipe.tasks.python.vision import GestureRecognizer, GestureRecognizerOptions, RunningMode
-from mediapipe.framework.formats import landmark_pb2
 
 
 class ImageHandlerNode(Node):
@@ -133,7 +129,9 @@ class ImageHandlerNode(Node):
             display_image = self.frame.copy()
 
             # Apply selected overlays
-            for is_checked, overlay_name in zip(self.overlay_checks, self.overlays.keys()):
+            for is_checked, overlay_name in zip(
+                self.overlay_checks, self.overlays.keys()
+            ):
                 if is_checked.get():
                     if self.overlays[overlay_name] is not None:
                         match overlay_name:
@@ -143,7 +141,13 @@ class ImageHandlerNode(Node):
                                     y1 = int(face.y1 * display_image.shape[1])
                                     x2 = int(face.x2 * display_image.shape[0])
                                     y2 = int(face.y2 * display_image.shape[1])
-                                    cv2.rectangle(display_image, (x1, y1), (x2, y2), (0, 255, 0), 2)  # Green rectangle
+                                    cv2.rectangle(
+                                        display_image,
+                                        (x1, y1),
+                                        (x2, y2),
+                                        (0, 255, 0),
+                                        2,
+                                    )  # Green rectangle
 
                             case "pose_landmarks":
                                 landmarks_x = self.overlays["pose_landmarks"][0]
@@ -151,18 +155,31 @@ class ImageHandlerNode(Node):
                                 for x, y in zip(landmarks_x, landmarks_y):
                                     cx = int(x * display_image.shape[1])
                                     cy = int(y * display_image.shape[0])
-                                    cv2.circle(display_image, (cx, cy), 5, (255, 0, 0), -1)  # Blue dots for landmarks
+                                    cv2.circle(
+                                        display_image, (cx, cy), 5, (255, 0, 0), -1
+                                    )  # Blue dots for landmarks
 
                             case "gesture_infos":
                                 for gesture in self.overlays["gesture_infos"]:
                                     hand = gesture.hand
                                     gesture_name = gesture.gesture
                                     confidence = gesture.confidence
-                                    x = int(gesture.x[0] * display_image.shape[1])  # Using first landmark for position
+                                    x = int(
+                                        gesture.x[0] * display_image.shape[1]
+                                    )  # Using first landmark for position
                                     y = int(gesture.y[0] * display_image.shape[0])
                                     text = f"{hand}: {gesture_name} ({confidence:.2f})"
-                                    cv2.putText(display_image, text, (x, y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1, cv2.LINE_AA)  # Red text
-                            
+                                    cv2.putText(
+                                        display_image,
+                                        text,
+                                        (x, y),
+                                        cv2.FONT_HERSHEY_SIMPLEX,
+                                        0.5,
+                                        (0, 0, 255),
+                                        1,
+                                        cv2.LINE_AA,
+                                    )  # Red text
+
             # Convert to suitable format for Tkinter
             display_image = cv2.cvtColor(display_image, cv2.COLOR_BGR2RGB)
             imgtk = ImageTk.PhotoImage(image=Image.fromarray(display_image))
