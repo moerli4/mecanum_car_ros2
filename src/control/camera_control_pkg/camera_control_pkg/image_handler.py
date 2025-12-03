@@ -9,6 +9,9 @@ from sensor_msgs.msg import CompressedImage
 from rclpy.qos import HistoryPolicy, QoSProfile, ReliabilityPolicy
 
 class ImageHandlerNode(Node):
+    """Node to display all the images with the detected bounding boxes etc.
+    Only run if a display is connected to the Raspberry Pi.
+    """
     def __init__(self):
         super().__init__("image_handler_node")
 
