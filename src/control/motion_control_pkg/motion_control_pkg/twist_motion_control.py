@@ -114,7 +114,7 @@ class TwistMotionControlNode(Node):
         msg = SetMotorSpeeds()
         speeds = np.floor(np.clip(wheel_speeds / self.max_w * 255.0, -255, 255)).astype(
             np.int16
-        ) # scale and clip to pwm
+        )  # scale and clip to pwm
         msg.speeds = speeds.tolist()
         self.set_wheel_speeds_pub.publish(msg)
 

@@ -35,7 +35,7 @@ class MotorDriverNode(Node):
         self.get_logger().info(f"MotorDriverNode initiated")
 
     def cb_speeds(self, msg: SetMotorSpeeds):
-        data = np.array(msg.speeds) * -1 # speeds are inverted
+        data = np.array(msg.speeds) * -1  # speeds are inverted
         self._last_speeds = data.astype(int)
         self._last_cmd_time = self.get_clock().now()
         self._apply_to_hardware()
@@ -58,7 +58,7 @@ class MotorDriverNode(Node):
         elapsed = (self.get_clock().now() - self._last_cmd_time).nanoseconds * 1e-9
         if elapsed > self.timeout:
             # zero speeds
-            if (self._last_speeds!=0).any():
+            if (self._last_speeds != 0).any():
                 self.get_logger().info("Command timeout: stopping motors")
                 self._last_speeds = np.array([0, 0, 0, 0])
                 self._apply_to_hardware()
