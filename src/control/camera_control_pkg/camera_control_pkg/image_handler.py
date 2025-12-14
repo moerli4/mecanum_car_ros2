@@ -5,7 +5,8 @@ import tkinter as tk
 import cv2
 import numpy as np
 import rclpy
-from control_interfaces.msg import FaceBoundingBoxArray, HandGestureArray, PoseLandmarks
+from control_interfaces.msg import (FaceBoundingBoxArray, HandGestureArray,
+                                    PoseLandmarks)
 from cv_bridge import CvBridge
 from PIL import Image, ImageTk
 from rclpy.node import Node
