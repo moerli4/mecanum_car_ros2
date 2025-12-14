@@ -35,7 +35,7 @@ class MotorDriverNode(Node):
         self.get_logger().info(f"MotorDriverNode initiated")
 
     def cb_speeds(self, msg: SetMotorSpeeds):
-        data = np.array(msg.speeds)
+        data = np.array(msg.speeds) * -1 # speeds are inverted
         self._last_speeds = data.astype(int)
         self._last_cmd_time = self.get_clock().now()
         self._apply_to_hardware()

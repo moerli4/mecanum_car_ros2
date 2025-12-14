@@ -65,9 +65,9 @@ class TwistMotionControlNode(Node):
         R = self.r
         a = self.L + self.W
         w_fl = (1.0 / R) * (vx - vy - a * wz)
-        w_rl = (1.0 / R) * (vx + vy - a * wz)
         w_fr = (1.0 / R) * (vx + vy + a * wz)
         w_rr = (1.0 / R) * (vx - vy + a * wz)
+        w_rl = (1.0 / R) * (vx + vy - a * wz)
 
         return np.array([w_fl, w_rl, w_fr, w_rr])
 
@@ -114,7 +114,7 @@ class TwistMotionControlNode(Node):
         msg = SetMotorSpeeds()
         speeds = np.floor(np.clip(wheel_speeds / self.max_w * 255.0, -255, 255)).astype(
             np.int16
-        )
+        ) # scale and clip to pwm
         msg.speeds = speeds.tolist()
         self.set_wheel_speeds_pub.publish(msg)
 
