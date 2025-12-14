@@ -2,7 +2,7 @@
 # Visual Studio Code
 # ---------
 .vscode/
-.history/                     # optional local history extensions
+.history/
 *.code-workspace
 
 # ---------
@@ -35,7 +35,6 @@ env.bak/
 .ipynb_checkpoints
 
 # PyInstaller
-#  Usually these files are written by a python script from a template
 *.manifest
 *.spec
 

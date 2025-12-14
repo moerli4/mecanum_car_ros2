@@ -23,7 +23,7 @@ setup(
     },
     entry_points={
         "console_scripts": [
-            "motion_control = motion_control_pkg.motion_control:main",
+            "twist_motion_control = motion_control_pkg.twist_motion_control:main",
         ],
     },
 )

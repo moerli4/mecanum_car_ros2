@@ -25,7 +25,7 @@ class MotorDriverNode(Node):
         # subscriptions
         qos_profile = 10
         self.sub_speeds = self.create_subscription(
-            SetMotorSpeeds, "motor_speeds", self.cb_speeds, qos_profile
+            SetMotorSpeeds, "set_motor_speeds", self.cb_speeds, qos_profile
         )
 
         # timer for timeout checking
@@ -44,8 +44,8 @@ class MotorDriverNode(Node):
         # apply to hardware
         for i, (d, s) in enumerate(
             zip(
-                (self._last_dirs >= 0).astype(int).tolist(),
-                np.abs(self._last_speeds).astype(int).tolist(),
+                (self._last_dirs >= 0).astype(int).tolist(),    # directions
+                np.abs(self._last_speeds).astype(int).tolist(), # speeds
             )
         ):
             try:
