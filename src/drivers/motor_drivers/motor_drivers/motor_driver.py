@@ -20,7 +20,7 @@ class MotorDriverNode(Node):
 
         # last command timestamp and values
         self._last_cmd_time = self.get_clock().now()
-        self._last_speeds = [0, 0, 0, 0]
+        self._last_speeds = np.array([0, 0, 0, 0])
 
         # subscriptions
         qos_profile = 10
@@ -35,7 +35,7 @@ class MotorDriverNode(Node):
         self.get_logger().info(f"MotorDriverNode initiated")
 
     def cb_speeds(self, msg: SetMotorSpeeds):
-        data = np.array(msg.data)
+        data = np.array(msg.speeds)
         self._last_speeds = data.astype(int)
         self._last_cmd_time = self.get_clock().now()
         self._apply_to_hardware()
@@ -58,9 +58,9 @@ class MotorDriverNode(Node):
         elapsed = (self.get_clock().now() - self._last_cmd_time).nanoseconds * 1e-9
         if elapsed > self.timeout:
             # zero speeds
-            if any(s != 0 for s in self._last_speeds):
+            if (self._last_speeds!=0).any():
                 self.get_logger().info("Command timeout: stopping motors")
-                self._last_speeds = [0, 0, 0, 0]
+                self._last_speeds = np.array([0, 0, 0, 0])
                 self._apply_to_hardware()
 
 
@@ -71,7 +71,7 @@ def main(args=None):
         rclpy.spin(node)
     finally:
         # ensure motors stopped on shutdown
-        node._last_speeds = [0, 0, 0, 0]
+        node._last_speeds = np.array([0, 0, 0, 0])
         node._apply_to_hardware()
         time.sleep(1)
         node.destroy_node()
