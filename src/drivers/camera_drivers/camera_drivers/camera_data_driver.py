@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import cv2
-import numpy as np
 import rclpy
 from rclpy.node import Node
 from rclpy.qos import HistoryPolicy, QoSProfile, ReliabilityPolicy
@@ -32,7 +31,6 @@ class CameraDataDriverNode(Node):
 
         if not self.cap.isOpened():
             self.get_logger().error("Error: Could not open video device.")
-            rclpy.shutdown()
             return
 
         # Timer to periodically capture and publish images

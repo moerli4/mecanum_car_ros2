@@ -1,11 +1,19 @@
+# ros essentials
 setuptools
+wheel
 PyYAML
-smbus
-numpy
+numpy<2.0.0
 empy
 lark
 catkin_pkg
+
+# linting
 black
 isort
+
+# project dependencies
+smbus
 opencv-python
 pytest
+mediapipe
+cv_bridge
