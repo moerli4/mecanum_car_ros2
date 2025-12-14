@@ -12,7 +12,7 @@ find_package(rosidl_default_generators REQUIRED)
 rosidl_generate_interfaces(${PROJECT_NAME}
 	"srv/SetServo.srv"
 	"srv/SetHeadlights.srv"
-	"msg/SetMotors.msg"
+	"msg/SetMotorSpeeds.msg"
 	)
 
 ament_package()

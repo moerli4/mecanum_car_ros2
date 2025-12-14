@@ -1,24 +1,26 @@
 #!/usr/bin/env python3
-import rclpy
-from rclpy.node import Node
-from driver_interfaces.msg import SetMotorSpeeds
-import numpy as np
 import time
+
+import numpy as np
+import rclpy
+from driver_interfaces.msg import SetMotorSpeeds
+from rclpy.node import Node
 
 from util.Raspbot_Library import Raspbot
 
+
 class MotorDriverNode(Node):
     def __init__(self):
-        super().__init__('motor_driver')
+        super().__init__("motor_driver")
         self.raspbot_ = Raspbot()
 
         # params
-        self.declare_parameter('timeout', 0.5)  # seconds before stopping if no cmd
-        self.timeout = float(self.get_parameter('timeout').value)
+        self.declare_parameter("timeout", 0.5)  # seconds before stopping if no cmd
+        self.timeout = float(self.get_parameter("timeout").value)
 
         # last command timestamp and values
         self._last_cmd_time = self.get_clock().now()
-        self._last_speeds = [0,0,0,0]
+        self._last_speeds = [0, 0, 0, 0]
 
         # subscriptions
         qos_profile = 10
@@ -27,7 +29,7 @@ class MotorDriverNode(Node):
         )
 
         # timer for timeout checking
-        self.create_timer(1/60, self._timer_cb)  # 60 Hz
+        self.create_timer(1 / 60, self._timer_cb)  # 60 Hz
 
         # log
         self.get_logger().info(f"MotorDriverNode initiated")
@@ -37,10 +39,15 @@ class MotorDriverNode(Node):
         self._last_speeds = data.astype(int)
         self._last_cmd_time = self.get_clock().now()
         self._apply_to_hardware()
-        
+
     def _apply_to_hardware(self):
         # apply to hardware
-        for i, (d, s) in enumerate(zip((self._last_dirs>=0).astype(int).tolist(), np.abs(self._last_speeds).astype(int).tolist())):
+        for i, (d, s) in enumerate(
+            zip(
+                (self._last_dirs >= 0).astype(int).tolist(),
+                np.abs(self._last_speeds).astype(int).tolist(),
+            )
+        ):
             try:
                 self.raspbot_.Ctrl_Car(i, int(d), int(s))
             except Exception as e:
@@ -52,9 +59,10 @@ class MotorDriverNode(Node):
         if elapsed > self.timeout:
             # zero speeds
             if any(s != 0 for s in self._last_speeds):
-                self.get_logger().info('Command timeout: stopping motors')
-                self._last_speeds = [0,0,0,0]
+                self.get_logger().info("Command timeout: stopping motors")
+                self._last_speeds = [0, 0, 0, 0]
                 self._apply_to_hardware()
+
 
 def main(args=None):
     rclpy.init(args=args)
@@ -63,11 +71,12 @@ def main(args=None):
         rclpy.spin(node)
     finally:
         # ensure motors stopped on shutdown
-        node._last_speeds = [0,0,0,0]
+        node._last_speeds = [0, 0, 0, 0]
         node._apply_to_hardware()
         time.sleep(1)
         node.destroy_node()
         rclpy.shutdown()
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

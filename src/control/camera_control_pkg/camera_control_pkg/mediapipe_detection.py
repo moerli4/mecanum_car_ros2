@@ -3,21 +3,15 @@ import cv2
 import mediapipe as mp
 import numpy as np
 import rclpy
-from control_interfaces.msg import (
-    FaceBoundingBox,
-    FaceBoundingBoxArray,
-    HandGesture,
-    HandGestureArray,
-    PoseLandmarks,
-)
+from control_interfaces.msg import (FaceBoundingBox, FaceBoundingBoxArray,
+                                    HandGesture, HandGestureArray,
+                                    PoseLandmarks)
 from cv_bridge import CvBridge
 from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
-from mediapipe.tasks.python.vision import (
-    GestureRecognizer,
-    GestureRecognizerOptions,
-    RunningMode,
-)
+from mediapipe.tasks.python.vision import (GestureRecognizer,
+                                           GestureRecognizerOptions,
+                                           RunningMode)
 from rclpy.node import Node
 from rclpy.qos import HistoryPolicy, QoSProfile, ReliabilityPolicy
 from sensor_msgs.msg import CompressedImage
