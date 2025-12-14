@@ -1,50 +1,60 @@
 #!/usr/bin/env python3
 import rclpy
-from driver_interfaces.srv import SetAllMotors, SetMotor
 from rclpy.node import Node
+from driver_interfaces.msg import SetMotorSpeeds
+import numpy as np
+import time
 
 from util.Raspbot_Library import Raspbot
 
-
 class MotorDriverNode(Node):
-    """Service Node to set Motor Speeds"""
-
     def __init__(self):
-        super().__init__("motor_driver")
-        # initialize raspbot
+        super().__init__('motor_driver')
         self.raspbot_ = Raspbot()
-        # create service
-        self.srv = self.create_service(SetMotor, "set_motor", self.set_motor_callback)
-        self.srv_all = self.create_service(
-            SetAllMotors, "set_all_motors", self.set_all_motors_callback
+
+        # params
+        self.declare_parameter('timeout', 0.5)  # seconds before stopping if no cmd
+        self.timeout = float(self.get_parameter('timeout').value)
+
+        # last command timestamp and values
+        self._last_cmd_time = self.get_clock().now()
+        self._last_speeds = [0,0,0,0]
+
+        # subscriptions
+        qos_profile = 10
+        self.sub_speeds = self.create_subscription(
+            SetMotorSpeeds, "motor_speeds", self.cb_speeds, qos_profile
         )
+
+        # timer for timeout checking
+        self.create_timer(1/60, self._timer_cb)  # 60 Hz
+
+        # log
         self.get_logger().info(f"MotorDriverNode initiated")
 
-    def set_motor_callback(self, request, response):
-        self.get_logger().info(
-            f"[Set Motor] Incoming request {request.id, request.dir, request.speed}"
-        )
-        # set motor at given id to given direction and speed
-        response.success = self.raspbot_.Ctrl_Car(
-            request.id, request.dir, request.speed
-        )
-        return response
+    def cb_speeds(self, msg: SetMotorSpeeds):
+        data = np.array(msg.data)
+        self._last_speeds = data.astype(int)
+        self._last_cmd_time = self.get_clock().now()
+        self._apply_to_hardware()
+        
+    def _apply_to_hardware(self):
+        # apply to hardware
+        for i, (d, s) in enumerate(zip((self._last_dirs>=0).astype(int).tolist(), np.abs(self._last_speeds).astype(int).tolist())):
+            try:
+                self.raspbot_.Ctrl_Car(i, int(d), int(s))
+            except Exception as e:
+                self.get_logger().error(f"Error applying to motor {i}: {e}")
 
-    def set_all_motors_callback(self, request, response):
-        self.get_logger().info(
-            f"[Set Motor] Incoming request {request.dir, request.speed}"
-        )
-        # set motors to given direction and speed
-        response.success = 0
-        for i, (direction, speed) in enumerate(zip(request.dir, request.speed)):
-            direction = int(direction)
-            speed = int(speed)
-            success = self.raspbot_.Ctrl_Car(i, direction, speed)
-            if success != 0:
-                response.success = 1
-                break  # break if one fails
-        return response
-
+    def _timer_cb(self):
+        # stop motors if timeout exceeded
+        elapsed = (self.get_clock().now() - self._last_cmd_time).nanoseconds * 1e-9
+        if elapsed > self.timeout:
+            # zero speeds
+            if any(s != 0 for s in self._last_speeds):
+                self.get_logger().info('Command timeout: stopping motors')
+                self._last_speeds = [0,0,0,0]
+                self._apply_to_hardware()
 
 def main(args=None):
     rclpy.init(args=args)
@@ -52,9 +62,12 @@ def main(args=None):
     try:
         rclpy.spin(node)
     finally:
+        # ensure motors stopped on shutdown
+        node._last_speeds = [0,0,0,0]
+        node._apply_to_hardware()
+        time.sleep(1)
         node.destroy_node()
         rclpy.shutdown()
 
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
