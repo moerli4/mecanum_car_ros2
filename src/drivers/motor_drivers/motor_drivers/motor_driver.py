@@ -44,8 +44,8 @@ class MotorDriverNode(Node):
         # apply to hardware
         for i, (d, s) in enumerate(
             zip(
-                (self._last_dirs >= 0).astype(int).tolist(),    # directions
-                np.abs(self._last_speeds).astype(int).tolist(), # speeds
+                (self._last_speeds >= 0).astype(int).tolist(),  # directions
+                np.abs(self._last_speeds).astype(int).tolist(),  # speeds
             )
         ):
             try:
