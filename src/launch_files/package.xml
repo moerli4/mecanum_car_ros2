@@ -15,6 +15,9 @@
   <exec_depend>peripherals_drivers</exec_depend>
   <exec_depend>sensor_drivers</exec_depend>
 
+  <exec_depend>motion_control_pkg</exec_depend>
+  <exec_depend>peripherals_control_pkg</exec_depend>
+
   <export>
     <build_type>ament_cmake</build_type>
   </export>
