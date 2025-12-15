@@ -1,0 +1,6 @@
+<launch>
+    <node pkg="motor_drivers" exec="motor_driver" ros_args="--log-level warn"/>
+    <node pkg="joy" exec="joy_node" ros_args="--log-level warn"/>
+    <node pkg="motion_control_pkg" exec="twist_motion_control" ros_args="--log-level warn"/>
+    <node pkg="peripherals_control_pkg" exec="controller_to_twist" ros_args="--log-level info"/>
+</launch>
