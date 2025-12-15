@@ -34,7 +34,7 @@ class MotorDriverNode(Node):
         self.declare_parameter("timeout", 0.5)  # seconds before stopping if no cmd
         self.declare_parameter("max_pwm", 200)  # limit to some value [0,255] for hardware safety
         self.timeout = float(self.get_parameter("timeout").value)
-        self.max_pwm = self.get_parameter("max_pwm")
+        self.max_pwm = float(self.get_parameter("max_pwm").value)
 
         # last command timestamp and values
         self._last_cmd_time = self.get_clock().now()
@@ -59,7 +59,7 @@ class MotorDriverNode(Node):
     def cb_speeds(self, msg: SetMotorSpeeds):
         """callback on set motor speed message received"""
         data = np.array(msg.speeds) * -1  # speeds are inverted
-        data = scale_to_range(data,self.max_pwm)
+        data = np.floor(scale_to_range(data,self.max_pwm)).astype(int)
         self._last_speeds = data.astype(int)
         self._last_cmd_time = self.get_clock().now()
         self._apply_to_hardware()
