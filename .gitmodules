@@ -1,0 +1,10 @@
+[submodule "thirdparty/livox_sdk"]
+	path = thirdparty/livox_sdk
+	url = https://github.com/moerli4/Livox-SDK2
+[submodule "thirdparty/livox_ros_driver"]
+	path = thirdparty/livox_ros_driver
+	url = https://github.com/moerli4/livox_ros_driver2
+	branch = jazzy
+[submodule "thirdparty/fast_lio_ros2"]
+	path = thirdparty/fast_lio_ros2
+	url = https://github.com/moerli4/FAST_LIO_ROS2
