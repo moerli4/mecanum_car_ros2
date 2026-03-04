@@ -12,6 +12,6 @@ cd "$ROOT_DIR"
 
 colcon build \
   --symlink-install \
-  --cmake-args -DCMAKE_BUILD_TYPE=Release
+  --cmake-args -DCMAKE_BUILD_TYPE=Release -Wno-dev
 
 echo "Build finished."
